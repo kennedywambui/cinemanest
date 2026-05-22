@@ -8,7 +8,6 @@
 </head>
 <body class="bg-gray-950 text-white font-sans selection:bg-red-600 selection:text-white relative">
 
-  <!-- Navbar -->
   <nav class="sticky top-0 z-40 bg-gray-950/90 backdrop-blur-md border-b border-gray-800 px-4 md:px-16 py-4 flex items-center justify-between">
     <div class="flex items-center space-x-8">
       <h1 class="text-2xl font-black tracking-wider text-red-600 uppercase cursor-pointer" onclick="loadDefaultHome()">MovieClub</h1>
@@ -26,7 +25,6 @@
     </div>
   </nav>
 
-  <!-- Hero Banner -->
   <header id="hero-banner" class="relative h-[65vh] md:h-[75vh] flex items-end p-6 md:p-16 overflow-hidden bg-cover bg-center transition-all duration-500" style="background-image: linear-gradient(to top, #030712 10%, transparent 70%), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925');">
     <div class="relative z-10 max-w-2xl space-y-4">
       <span class="bg-red-600/20 text-red-500 border border-red-600/30 text-xs font-bold uppercase px-3 py-1 rounded-md tracking-wider">Featured Blockbuster</span>
@@ -43,7 +41,6 @@
     </div>
   </header>
 
-  <!-- Main Grid -->
   <main class="px-4 md:px-16 py-12 space-y-12">
     <section class="space-y-6">
       <div class="flex items-center justify-between border-b border-gray-800 pb-3">
@@ -56,15 +53,20 @@
     </section>
   </main>
 
-  <!-- Detail Popup Modal Layer -->
-  <div id="detail-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl relative transition-transform transform scale-95 duration-300" id="modal-card">
-      <button onclick="closeModal()" class="absolute top-4 right-4 z-10 bg-gray-950/60 hover:bg-red-600 text-white rounded-full p-2 transition focus:outline-none">
+      
+      <button onclick="closeModal()" class="absolute top-4 right-4 z-20 bg-gray-950/60 hover:bg-red-600 text-white rounded-full p-2 transition focus:outline-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
+
       <div id="modal-content-loader" class="text-center py-20 text-gray-400">Fetching cinematic details...</div>
+      
       <div id="modal-body" class="hidden">
-        <!-- Injected via JavaScript dynamically -->
+        </div>
+
+      <div id="trailer-player-view" class="hidden bg-black w-full aspect-video">
+        <div id="video-frame-container" class="w-full h-full"></div>
       </div>
     </div>
   </div>
@@ -93,6 +95,8 @@
     const modalBody = document.getElementById('modal-body');
     const modalLoader = document.getElementById('modal-content-loader');
     const modalLayoutCard = document.getElementById('modal-card');
+    const trailerPlayerView = document.getElementById('trailer-player-view');
+    const videoFrameContainer = document.getElementById('video-frame-container');
 
     async function initApp() {
       await loadHeroSection();
@@ -108,7 +112,6 @@
           const topMovie = data.results[0]; 
           heroTitle.innerText = topMovie.title;
           heroOverview.innerText = topMovie.overview;
-          // Set click handler for main banner hero item as well
           heroBanner.setAttribute('onclick', `openModal(${topMovie.id})`);
           heroBanner.classList.add('cursor-pointer');
           if(topMovie.backdrop_path) {
@@ -135,7 +138,7 @@
       }
     }
 
-    // Dynamic Search Infrastructure
+    // Search Architecture
     void function setupSearch() {
       let typingTimer;
       searchInput.addEventListener('input', () => {
@@ -193,13 +196,14 @@
       });
     }
 
-    // Modal Control Routines
+    // Modal Mechanics
     async function openModal(movieId) {
-      // Unfreeze overlay wrapper, trigger CSS transition hooks
       detailModal.classList.remove('hidden');
       document.body.classList.add('overflow-hidden');
       modalLoader.classList.remove('hidden');
       modalBody.classList.add('hidden');
+      trailerPlayerView.classList.add('hidden'); // Reset video screen view
+      videoFrameContainer.innerHTML = ''; // Safely wipe old video tracks
       
       setTimeout(() => {
         modalLayoutCard.classList.remove('scale-95');
@@ -207,13 +211,29 @@
       }, 10);
 
       try {
-        const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
-        const movie = await response.json();
+        // Fetch Details & Videos in parallel to save request overhead
+        const [detailRes, videoRes] = await Promise.all([
+          fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`),
+          fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`)
+        ]);
+        
+        const movie = await detailRes.json();
+        const videoData = await videoRes.json();
         
         const runtime = movie.runtime ? `${movie.runtime} min` : 'N/A';
         const genres = movie.genres ? movie.genres.map(g => g.name).join(', ') : 'Unknown';
         const backdrop = movie.backdrop_path ? `${IMAGE_URL}${movie.backdrop_path}` : '';
         const poster = movie.poster_path ? `${POSTER_URL}${movie.poster_path}` : 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1000';
+
+        // Extract clean trailer asset parameters
+        const trailer = videoData.results.find(vid => vid.site === 'YouTube' && (vid.type === 'Trailer' || vid.type === 'Teaser'));
+        const trailerButtonMarkup = trailer 
+          ? `<button onclick="playTrailer('${trailer.key}')" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2.5 rounded-lg transition flex items-center justify-center space-x-2 text-sm shadow-lg shadow-red-600/20">
+               <span>🍿 Watch Trailer</span>
+             </button>`
+          : `<button disabled class="w-full sm:w-auto bg-gray-800 text-gray-500 font-bold px-6 py-2.5 rounded-lg text-sm cursor-not-allowed">
+               No Trailer Available
+             </button>`;
 
         modalBody.innerHTML = `
           <div class="relative h-48 md:h-64 bg-cover bg-center" style="background-image: linear-gradient(to top, #111827, transparent), url('${backdrop}')"></div>
@@ -230,6 +250,13 @@
               </p>
               <p class="text-xs text-red-400 font-semibold uppercase tracking-wider">${genres}</p>
               <p class="text-sm text-gray-300 leading-relaxed pt-2">${movie.overview || 'No overview available.'}</p>
+              
+              <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                ${trailerButtonMarkup}
+                <button class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white px-6 py-2.5 font-bold rounded-lg text-sm transition">
+                  + Add to Watchlist
+                </button>
+              </div>
             </div>
           </div>
         `;
@@ -241,16 +268,36 @@
       }
     }
 
+    // Swaps internal DOM structural layout representation to load responsive iframe element
+    function playTrailer(youtubeKey) {
+      modalBody.classList.add('hidden');
+      trailerPlayerView.classList.remove('hidden');
+      
+      // Load YouTube embed with auto-play activated configuration rules
+      videoFrameContainer.innerHTML = `
+        <iframe 
+          class="w-full h-full" 
+          src="https://www.youtube.com/embed/${youtubeKey}?autoplay=1&modestbranding=1&rel=0" 
+          title="YouTube video player" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen>
+        </iframe>`;
+    }
+
     function closeModal() {
       modalLayoutCard.classList.remove('scale-100');
       modalLayoutCard.classList.add('scale-95');
+      
+      // Stop the audio/video immediately by tearing down the frame layer
+      videoFrameContainer.innerHTML = ''; 
+      
       setTimeout(() => {
         detailModal.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
       }, 150);
     }
 
-    // Close modal if clicking background outside container card
     detailModal.addEventListener('click', (e) => {
       if (e.target === detailModal) closeModal();
     });
