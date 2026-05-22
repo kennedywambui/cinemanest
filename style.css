@@ -103,3 +103,12 @@ iframe {
 #searchResults {
   padding: 20px;
 }
+.search-movies {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.movie-info h4,
+.movie-info p {
+  margin: 0;
+}
