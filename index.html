@@ -1,63 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>StreamFlix</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>MovieFlix</title>
+
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: black;
+}
+
+.logo {
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#search {
+  padding: 8px;
+  width: 200px;
+}
+
+.row {
+  margin-left: 20px;
+}
+
+.row h2 {
+  margin: 10px 0;
+}
+
+.row-posters {
+  display: flex;
+  overflow-x: scroll;
+}
+
+.poster {
+  width: 150px;
+  margin-right: 10px;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.poster:hover {
+  transform: scale(1.2);
+}
+
+/* Modal */
+#modal {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.9);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+#modal iframe {
+  width:80%;
+  height:80%;
+}
+</style>
 </head>
+
 <body>
 
-<!-- HEADER -->
-<header class="header">
-  <h1>StreamFlix</h1>
-
-  <input 
-    type="text" 
-    placeholder="Search movies..." 
-    onkeyup="debounceSearch(this.value)"
-  >
+<header>
+  <div class="logo">MovieFlix</div>
+  <input id="search" placeholder="Search movies...">
 </header>
 
-<!-- SEARCH RESULTS -->
-<section id="searchResults"></section>
+<div id="rows"></div>
 
-<!-- TRENDING -->
-<section class="row">
-  <h2>Trending</h2>
-  <div id="trending" class="movies"></div>
-</section>
-
-<!-- ACTION -->
-<section class="row">
-  <h2>Action</h2>
-  <div id="action" class="movies"></div>
-</section>
-
-<!-- COMEDY -->
-<section class="row">
-  <h2>Comedy</h2>
-  <div id="comedy" class="movies"></div>
-</section>
-
-<!-- TOP RATED -->
-<section class="row">
-  <h2>Top Rated</h2>
-  <div id="toprated" class="movies"></div>
-</section>
-
-<!-- VIDEO PLAYER -->
-<div id="player" class="player">
-  <span class="close" onclick="closePlayer()">✖</span>
-  <iframe 
-    id="videoFrame" 
-    frameborder="0" 
-    allow="autoplay; encrypted-media" 
-    allowfullscreen>
-  </iframe>
+<div id="modal" onclick="closeModal()">
+  <iframe id="player" src="" frameborder="0" allowfullscreen></iframe>
 </div>
 
-<!-- SCRIPT -->
-<script src="script.js"></script>
+<script>
+
+const API_KEY = "1d3ae144acfb6bfcb25f70361cedcf29";
+const BASE_URL = "https://api.themoviedb.org/3";
+
+// Categories
+const categories = [
+  {title: "Trending", url: "/trending/movie/week"},
+  {title: "Top Rated", url: "/movie/top_rated"},
+  {title: "Action", url: "/discover/movie?with_genres=28"},
+  {title: "Comedy", url: "/discover/movie?with_genres=35"}
+];
+
+// Fetch rows
+async function loadRows() {
+  const container = document.getElementById("rows");
+
+  for (let cat of categories) {
+    const res = await fetch(`${BASE_URL}${cat.url}?api_key=${API_KEY}`);
+    const data = await res.json();
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    row.innerHTML = `
+      <h2>${cat.title}</h2>
+      <div class="row-posters">
+        ${data.results.map(movie => `
+          <img 
+            class="poster" 
+            src="https://image.tmdb.org/t/p/w300${movie.poster_path}"
+            onclick="playTrailer(${movie.id})"
+          />
+        `).join("")}
+      </div>
+    `;
+
+    container.appendChild(row);
+  }
+}
+
+loadRows();
+
+// Trailer
+async function playTrailer(id) {
+  const res = await fetch(`${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`);
+  const data = await res.json();
+
+  const trailer = data.results.find(v => v.type === "Trailer");
+
+  if (trailer) {
+    document.getElementById("modal").style.display = "flex";
+    document.getElementById("player").src =
+      `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+  }
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("player").src = "";
+}
+
+// Search
+document.getElementById("search").addEventListener("input", async (e) => {
+  const query = e.target.value;
+
+  if (!query) return;
+
+  const res = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`);
+  const data = await res.json();
+
+  const container = document.getElementById("rows");
+  container.innerHTML = `
+    <div class="row">
+      <h2>Search Results</h2>
+      <div class="row-posters">
+        ${data.results.map(movie => `
+          <img 
+            class="poster" 
+            src="https://image.tmdb.org/t/p/w300${movie.poster_path}"
+            onclick="playTrailer(${movie.id})"
+          />
+        `).join("")}
+      </div>
+    </div>
+  `;
+});
+
+</script>
 
 </body>
 </html>
