@@ -270,7 +270,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </div>
         <div class="perk-text">
-          <strong>Kenyan & African Content</strong>
+          <strong>African movies & Originals</strong>
           <span>Local stories, international quality</span>
         </div>
       </div>
@@ -322,11 +322,6 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
           <label>First Name</label>
           <input type="text" id="fname" placeholder="John">
           <div class="field-error" id="fname-err">Please enter your first name</div>
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" id="lname" placeholder="Doe">
-          <div class="field-error" id="lname-err">Please enter your last name</div>
         </div>
       </div>
 
@@ -515,7 +510,6 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     let ok = true;
     const fields = [
       { id: 'fname',    errId: 'fname-err',  check: v => v.trim().length > 1 },
-      { id: 'lname',    errId: 'lname-err',  check: v => v.trim().length > 1 },
       { id: 'email',    errId: 'email-err',  check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
       { id: 'phone',    errId: 'phone-err',  check: v => v.replace(/\s/g,'').length >= 9 },
       { id: 'password', errId: 'pw-err',     check: v => v.length >= 8 },
@@ -593,7 +587,6 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
       Creating your account...`;
 
     const fname = document.getElementById('fname').value.trim();
-    const lname = document.getElementById('lname').value.trim();
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const password = document.getElementById('password').value;
@@ -603,7 +596,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
       // 2. Set display name
-      await updateProfile(user, { displayName: `${fname} ${lname}` });
+      await updateProfile(user, { displayName: `${fname} ` });
 
       // 3. Save profile + trial info to Firestore
       const trialStart = new Date();
@@ -611,7 +604,6 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 
       await setDoc(doc(db, 'users', user.uid), {
         firstName:  fname,
-        lastName:   lname,
         email:      email,
         phone:      phone,
         plan:       'trial',
