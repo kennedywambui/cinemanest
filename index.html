@@ -16,7 +16,7 @@ body {
 header {
   position: fixed;
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px;
   background: rgba(0,0,0,0.9);
   display: flex;
   justify-content: space-between;
@@ -25,7 +25,7 @@ header {
 
 .logo {
   color: red;
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .controls {
@@ -50,23 +50,10 @@ select, input {
   padding: 20px;
 }
 
-.hero h1 {
-  font-size: 30px;
-}
-
 /* ROW */
 .row {
   padding-left: 10px;
   margin-top: 10px;
-}
-
-.row h2 {
-  font-size: 16px;
-}
-
-/* SCROLL */
-.row-wrapper {
-  position: relative;
 }
 
 .row-posters {
@@ -74,33 +61,21 @@ select, input {
   overflow-x: auto;
 }
 
+/* POSTER */
 .poster-container {
-  position: relative;
   margin-right: 8px;
+  cursor: pointer;
 }
 
 .poster {
   width: 120px;
 }
 
-/* MOBILE FIX */
+/* DESKTOP */
 @media (min-width: 768px) {
   .poster {
     width: 200px;
   }
-}
-
-/* HOVER */
-.hover-info {
-  display: none;
-}
-
-.poster-container:hover .hover-info {
-  display: block;
-  position: absolute;
-  bottom: 0;
-  background: black;
-  width: 100%;
 }
 
 /* MODAL */
@@ -111,6 +86,7 @@ select, input {
   background: black;
   display:none;
   flex-direction: column;
+  z-index: 200;
 }
 
 #player {
@@ -119,7 +95,7 @@ select, input {
   border: none;
 }
 
-/* EPISODE PANEL */
+/* PANEL */
 #episodePanel {
   padding: 10px;
   background: #111;
@@ -131,7 +107,7 @@ select, input {
 }
 
 button {
-  padding: 8px;
+  padding: 10px;
   border: none;
   background: red;
   color: white;
@@ -157,9 +133,13 @@ button {
 
 <!-- PLAYER -->
 <div id="modal">
-  <iframe id="player"></iframe>
+  <button onclick="closePlayer()">Close</button>
+  <iframe 
+    id="player"
+    allow="autoplay; fullscreen"
+    allowfullscreen>
+  </iframe>
 
-  <!-- EPISODE SELECTOR -->
   <div id="episodePanel" style="display:none;">
     <select id="season"></select>
     <select id="episode"></select>
@@ -169,15 +149,15 @@ button {
 
 <script>
 const API_KEY = "1d3ae144acfb6bfcb25f70361cedcf29";
-const BASE = "https://api.themoviedb.org/3";
 const STREAM_KEY = "nx_a6c5083f70bde5a7b4c2dec92de375ac";
+const BASE = "https://api.themoviedb.org/3";
 
 let type = "movie";
 let currentId = null;
 
 /* TYPE SWITCH */
-document.getElementById("type").addEventListener("change", (e)=>{
-  type = e.target.value;
+document.getElementById("type").addEventListener("change", () => {
+  type = document.getElementById("type").value;
   loadAll();
 });
 
@@ -190,7 +170,7 @@ async function loadHero() {
   document.getElementById("hero").style.backgroundImage =
     `url(https://image.tmdb.org/t/p/original${m.backdrop_path})`;
 
-  document.getElementById("hero").innerHTML = `<h1>${m.title || m.name}</h1>`;
+  document.getElementById("hero").innerHTML = `<h2>${m.title || m.name}</h2>`;
 }
 
 /* ROW */
@@ -200,16 +180,26 @@ async function createRow(title, url) {
 
   return `
     <div class="row">
-      <h2>${title}</h2>
+      <h3>${title}</h3>
       <div class="row-posters">
         ${data.results.slice(0,10).map(m=>`
-          <div class="poster-container" onclick="openPlayer(${m.id})">
+          <div class="poster-container" data-id="${m.id}">
             <img class="poster" src="https://image.tmdb.org/t/p/w300${m.poster_path}">
           </div>
         `).join("")}
       </div>
     </div>
   `;
+}
+
+/* ATTACH CLICK EVENTS */
+function attachClickEvents() {
+  document.querySelectorAll(".poster-container").forEach(el => {
+    el.addEventListener("click", () => {
+      const id = el.getAttribute("data-id");
+      openPlayer(id);
+    });
+  });
 }
 
 /* LOAD ROWS */
@@ -221,24 +211,39 @@ async function loadRows() {
   const comedy = await createRow("Comedy", `${BASE}/discover/${type}?api_key=${API_KEY}&with_genres=35`);
 
   rows.innerHTML = trending + topRated + comedy;
+
+  attachClickEvents();
 }
 
 /* OPEN PLAYER */
-async function openPlayer(id) {
+function openPlayer(id) {
   currentId = id;
-  document.getElementById("modal").style.display = "flex";
 
-  if(type === "movie") {
-    document.getElementById("episodePanel").style.display = "none";
-    document.getElementById("player").src =
-      `https://api.codespecters.com/embed/movie/${id}?apikey=${STREAM_KEY}`;
-  } else {
-    document.getElementById("episodePanel").style.display = "block";
-    loadSeasons(id);
-  }
+  const modal = document.getElementById("modal");
+  const player = document.getElementById("player");
+
+  modal.style.display = "flex";
+  player.src = "";
+
+  setTimeout(() => {
+    if(type === "movie") {
+      document.getElementById("episodePanel").style.display = "none";
+      player.src =
+        `https://api.codespecters.com/embed/movie/${id}?apikey=${STREAM_KEY}`;
+    } else {
+      document.getElementById("episodePanel").style.display = "block";
+      loadSeasons(id);
+    }
+  }, 100);
 }
 
-/* LOAD SEASONS */
+/* CLOSE */
+function closePlayer() {
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("player").src = "";
+}
+
+/* SEASONS */
 async function loadSeasons(id) {
   const res = await fetch(`${BASE}/tv/${id}?api_key=${API_KEY}`);
   const data = await res.json();
@@ -252,7 +257,7 @@ async function loadSeasons(id) {
   loadEpisodes();
 }
 
-/* LOAD EPISODES */
+/* EPISODES */
 async function loadEpisodes() {
   const season = document.getElementById("season").value;
 
@@ -275,12 +280,12 @@ function loadEpisode() {
     `https://api.codespecters.com/embed/tv/${currentId}/${season}/${episode}?apikey=${STREAM_KEY}`;
 }
 
-/* CHANGE SEASON */
 document.getElementById("season").addEventListener("change", loadEpisodes);
 
 /* SEARCH */
-document.getElementById("search").addEventListener("input", async e=>{
+document.getElementById("search").addEventListener("input", async e => {
   const q = e.target.value;
+
   if (!q) return loadRows();
 
   const res = await fetch(`${BASE}/search/${type}?api_key=${API_KEY}&query=${q}`);
@@ -288,16 +293,18 @@ document.getElementById("search").addEventListener("input", async e=>{
 
   document.getElementById("rows").innerHTML = `
     <div class="row">
-      <h2>Results</h2>
+      <h3>Results</h3>
       <div class="row-posters">
         ${data.results.map(m=>`
-          <div class="poster-container" onclick="openPlayer(${m.id})">
+          <div class="poster-container" data-id="${m.id}">
             <img class="poster" src="https://image.tmdb.org/t/p/w300${m.poster_path}">
           </div>
         `).join("")}
       </div>
     </div>
   `;
+
+  attachClickEvents();
 });
 
 /* INIT */
