@@ -7,26 +7,24 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-
 body{background:#141414;color:white;overflow-x:hidden;}
 
-/* NAV */
 .nav{
-position:fixed;
-top:0;width:100%;
+position:fixed;top:0;width:100%;
 padding:18px 40px;
 display:flex;justify-content:space-between;
 background:linear-gradient(to bottom,rgba(0,0,0,0.8),transparent);
 z-index:1000;
 }
+
 .logo{color:#e50914;font-size:30px;font-weight:bold;}
+
 .search{
 background:rgba(0,0,0,0.6);
 border:none;padding:10px;
 border-radius:20px;color:white;
 }
 
-/* HERO */
 .hero{
 height:90vh;
 display:flex;
@@ -34,29 +32,22 @@ align-items:flex-end;
 padding:50px;
 background-size:cover;
 }
-.hero-content{max-width:600px;}
-.hero h1{font-size:60px;margin-bottom:10px;}
+
+.hero h1{font-size:60px;}
 .hero p{color:#ddd;}
 
-/* ROWS */
 .row{margin-top:-80px;padding-left:30px;margin-bottom:40px;}
-.row h2{margin-bottom:10px;}
-.row-posters{
-display:flex;overflow-x:auto;
-padding:20px 0;
-}
+.row-posters{display:flex;overflow-x:auto;padding:20px 0;}
 .row-posters::-webkit-scrollbar{display:none;}
 
 .poster{
-width:220px;
-margin-right:10px;
-border-radius:6px;
-cursor:pointer;
+width:220px;margin-right:10px;
+border-radius:6px;cursor:pointer;
 transition:0.3s;
 }
+
 .poster:hover{transform:scale(1.15);}
 
-/* MOBILE */
 @media(max-width:768px){
 .hero h1{font-size:35px;}
 .poster{width:140px;}
@@ -72,7 +63,7 @@ transition:0.3s;
 </div>
 
 <div class="hero" id="hero">
-<div class="hero-content">
+<div>
 <h1 id="hero-title">Loading...</h1>
 <p id="hero-desc"></p>
 </div>
@@ -94,30 +85,22 @@ const API_KEY = "1d3ae144acfb6bfcb25f70361cedcf29";
 const IMG = "https://image.tmdb.org/t/p/original";
 const API = "https://api.themoviedb.org/3";
 
-/* NAV SCROLL EFFECT */
-window.addEventListener("scroll",()=>{
-document.querySelector(".nav").style.background =
-window.scrollY > 50 ? "#111" : "transparent";
-});
-
 /* HERO */
-let heroMovie;
-
 async function loadHero(){
 const res = await fetch(`${API}/trending/movie/week?api_key=${API_KEY}`);
 const data = await res.json();
 
-heroMovie = data.results[Math.floor(Math.random()*data.results.length)];
+const movie = data.results[Math.floor(Math.random()*data.results.length)];
 
 document.getElementById("hero").style.backgroundImage =
 `linear-gradient(to top,#141414,transparent),
-url(${IMG + heroMovie.backdrop_path})`;
+url(${IMG + movie.backdrop_path})`;
 
-document.getElementById("hero-title").innerText = heroMovie.title;
-document.getElementById("hero-desc").innerText = heroMovie.overview;
+document.getElementById("hero-title").innerText = movie.title;
+document.getElementById("hero-desc").innerText = movie.overview;
 }
 
-/* ROW FETCH */
+/* ROW */
 async function fetchRow(url, container, type){
 const res = await fetch(url);
 const data = await res.json();
@@ -131,6 +114,7 @@ const img = document.createElement("img");
 img.src = IMG + item.backdrop_path;
 img.classList.add("poster");
 
+/* 👇 NEW WORKING PLAYER LINK */
 img.onclick = ()=>{
 window.location.href =
 `watch.html?id=${item.id}&type=${type}`;
@@ -148,6 +132,7 @@ if(q.length < 2) return;
 const res = await fetch(
 `${API}/search/multi?api_key=${API_KEY}&query=${q}`
 );
+
 const data = await res.json();
 
 const trending = document.getElementById("trending");
