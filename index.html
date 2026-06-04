@@ -109,19 +109,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
 }
 .trial-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 2s infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.nav-pay-now{
+  background:var(--red);border:none;color:#fff;
+  padding:8px 16px;border-radius:20px;font-family:inherit;font-size:13px;
+  font-weight:600;cursor:pointer;transition:background .2s,transform .15s;
+  display:none;white-space:nowrap;
+}
+.nav-pay-now:hover{background:var(--red-dark);transform:scale(1.03);}
+.nav-pay-now.show{display:inline-block;}
 .nav-signout{
   background:none;border:1px solid rgba(255,255,255,.12);color:var(--muted);
   padding:6px 12px;border-radius:20px;font-family:inherit;font-size:12px;
   cursor:pointer;transition:all .2s;
 }
 .nav-signout:hover{border-color:rgba(255,255,255,.3);color:#fff;}
-
-.nav-pay-now{
-  background:var(--red);border:none;color:#fff;
-  padding:6px 14px;border-radius:20px;font-family:inherit;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all .2s;
-}
-.nav-pay-now:hover{background:var(--red-dark);transform:scale(1.05);}
 
 /* ─── SEARCH OVERLAY ─── */
 #search-results{
@@ -617,8 +618,8 @@ footer a:hover{color:var(--red);}
         <span class="trial-dot"></span>
         <span id="trial-days-label">Trial</span>
       </div>
-      <button class="nav-pay-now" id="nav-pay-now-btn" onclick="goToPayment()" style="display:none;">Pay Now</button>
-      <button class="nav-signout" id="nav-signout-btn" onclick="handleSignOut()">Sign Out</button>
+      <button class="nav-pay-now" id="nav-pay-now-btn" onclick="goToPayment()">Pay Now</button>
+      <button class="nav-signout" id="nav-signout-btn">Sign Out</button>
     </div>
     <button class="nav-btn" onclick="openMyList()">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -866,43 +867,34 @@ let myList = JSON.parse(localStorage.getItem('cinemanest-mylist') || '[]');
 let searchTimeout = null;
 let currentModal = null;
 
-/* ── CHECK TRIAL STATUS ON PAGE LOAD ── */
+/* ── CHECK TRIAL STATUS ON LOAD ── */
+window.addEventListener('DOMContentLoaded', () => {
+  checkTrialStatus();
+});
+
 function checkTrialStatus() {
   const saved = localStorage.getItem('cinemanest-trial');
-  const navCta = document.getElementById('nav-cta');
-  const navBadge = document.getElementById('nav-trial-badge');
-  const payNowBtn = document.getElementById('nav-pay-now-btn');
-  const signOutBtn = document.getElementById('nav-signout-btn');
-  const trialPill = document.getElementById('trial-pill-nav');
-  const trialsLabel = document.getElementById('trial-days-label');
-
   if (saved) {
     const trial = JSON.parse(saved);
     const msLeft = new Date(trial.end) - new Date();
-    const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
-
+    
     if (msLeft <= 0) {
-      // Trial expired - redirect to pricing
-      window.location.href = 'pricing.html';
+      // Trial expired - redirect to payment
+      window.location.href = 'https://selar.com/cinemanest';
       return;
     }
-
-    // Trial active
-    navCta.style.display = 'none';
-    navBadge.style.display = 'flex';
-    payNowBtn.style.display = 'block';
-    signOutBtn.style.display = 'block';
-    trialsLabel.textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
+    
+    // Trial active - show pay now button
+    document.getElementById('nav-cta').style.display = 'none';
+    document.getElementById('nav-trial-badge').style.display = 'flex';
+    const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+    document.getElementById('trial-days-label').textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
+    document.getElementById('nav-pay-now-btn').classList.add('show');
   }
 }
 
 function goToPayment() {
-  window.location.href = 'pricing.html';
-}
-
-function handleSignOut() {
-  localStorage.removeItem('cinemanest-trial');
-  window.location.href = 'index.html';
+  window.location.href = 'https://selar.com/cinemanest';
 }
 
 /* ── NAV ── */
@@ -1045,15 +1037,19 @@ async function openModal(id, type) {
   }
 
   const inList = myList.some(x => x.id === id);
-  const mylistBtn = document.getElementById('modal-mylist-btn');
-  mylistBtn.innerText = inList ? '✓ In My List' : '+ Add to My List';
-  mylistBtn.onclick = () => toggleMyListFromModal(id, type);
+  const listBtn = document.getElementById('modal-mylist-btn');
+  listBtn.textContent = inList ? '✓ In My List' : '+ Add to My List';
+  listBtn.style.background = inList ? 'rgba(229,9,20,.2)' : 'rgba(255,255,255,.12)';
+  listBtn.style.color = inList ? 'var(--red)' : '#fff';
+  listBtn.onclick = () => toggleMyList(null, m, type, 'portrait');
 
   document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function closeModalOnBg(e) {
@@ -1061,124 +1057,113 @@ function closeModalOnBg(e) {
 }
 
 /* ── MY LIST ── */
+function toggleMyList(e, item, type, style) {
+  if (e) e.stopPropagation();
+  const id = item.id;
+  const existing = myList.findIndex(x => x.id === id);
+  if (existing >= 0) {
+    myList.splice(existing, 1);
+  } else {
+    myList.push({...item, type, style});
+  }
+  localStorage.setItem('cinemanest-mylist', JSON.stringify(myList));
+  refreshMyListUI();
+  showToast(existing >= 0 ? 'Removed from My List' : 'Added to My List');
+}
+
 function openMyList() {
-  const panel = document.getElementById('mylist-panel');
-  panel.classList.add('open');
-  renderMyList();
+  refreshMyListUI();
+  document.getElementById('mylist-panel').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeMyList() {
   document.getElementById('mylist-panel').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
-function renderMyList() {
+function refreshMyListUI() {
   const content = document.getElementById('mylist-content');
   if (myList.length === 0) {
-    content.innerHTML = '<div class="mylist-empty">Your list is empty. Add movies and shows to watch later!</div>';
+    content.innerHTML = '<div class="mylist-empty">Your list is empty.<br>Add movies & shows to watch later!</div>';
     return;
   }
-  content.innerHTML = myList.map(item => `
-    <div class="mylist-item">
-      <img src="${IMG_W + (item.poster_path || item.backdrop_path)}" alt="${item.title || item.name}">
-      <div class="mylist-item-info">
-        <div class="mylist-item-title">${item.title || item.name}</div>
-        <div class="mylist-item-type">${item.media_type || 'movie'}</div>
+  content.innerHTML = myList.map(item => {
+    const img = item.poster_path ? IMG_W + item.poster_path : '';
+    const title = item.title || item.name || 'Unknown';
+    const type = item.type === 'movie' ? 'Movie' : 'Show';
+    return `
+      <div class="mylist-item" onclick="openModal(${item.id},'${item.type}');closeMyList();">
+        ${img ? `<img src="${img}" alt="">` : '<div style="width:72px;height:44px;background:var(--surface2);border-radius:6px;flex-shrink:0;"></div>'}
+        <div class="mylist-item-info">
+          <div class="mylist-item-title">${title}</div>
+          <div class="mylist-item-type">${type}</div>
+        </div>
+        <button class="mylist-item-rm" onclick="toggleMyList(event,${JSON.stringify(item)},'${item.type}','${item.style}')">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
-      <button class="mylist-item-rm" onclick="removeFromMyList(${item.id})">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
-function toggleMyList(e, item, type, style) {
-  e.stopPropagation();
-  const idx = myList.findIndex(x => x.id === item.id);
-  if (idx >= 0) {
-    myList.splice(idx, 1);
+/* ── FILTER GENRE ── */
+function filterGenre(genreId, el) {
+  document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  if (genreId === 0) {
+    loadTrending();
   } else {
-    item.media_type = type;
-    myList.push(item);
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}&sort_by=popularity.desc`, 'trending-list', 'movie', 'landscape');
   }
-  localStorage.setItem('cinemanest-mylist', JSON.stringify(myList));
-  showToast(idx >= 0 ? 'Removed from My List' : 'Added to My List');
 }
 
-function toggleMyListFromModal(id, type) {
-  const item = currentModal.item;
-  const idx = myList.findIndex(x => x.id === id);
-  if (idx >= 0) {
-    myList.splice(idx, 1);
-    document.getElementById('modal-mylist-btn').innerText = '+ Add to My List';
+/* ── WATCH HANDLERS ── */
+function goWatch(id, type) {
+  const saved = localStorage.getItem('cinemanest-trial');
+  if (!saved) {
+    window.location.href = `signup.html?redirect=watch&id=${id}&type=${type}`;
   } else {
-    item.media_type = type;
-    myList.push(item);
-    document.getElementById('modal-mylist-btn').innerText = '✓ In My List';
+    window.location.href = `watch.html?id=${id}&type=${type}`;
   }
-  localStorage.setItem('cinemanest-mylist', JSON.stringify(myList));
 }
 
-function removeFromMyList(id) {
-  myList = myList.filter(x => x.id !== id);
-  localStorage.setItem('cinemanest-mylist', JSON.stringify(myList));
-  renderMyList();
-  showToast('Removed from My List');
+/* ── TRENDING ── */
+function loadTrending() {
+  fetchRow(`${API}/trending/movie/week?api_key=${API_KEY}`, 'trending-list', 'movie', 'landscape');
 }
+
+/* ── INIT ── */
+loadHero();
+loadTrending();
+fetchRow(`${API}/movie/top_rated?api_key=${API_KEY}`, 'top-list', 'movie', 'portrait');
+fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=28&sort_by=popularity.desc`, 'action-list', 'movie', 'landscape');
+fetchRow(`${API}/tv/popular?api_key=${API_KEY}`, 'tv-list', 'tv', 'portrait');
+fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=27&sort_by=popularity.desc`, 'horror-list', 'movie', 'landscape');
+fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=35&sort_by=popularity.desc`, 'comedy-list', 'movie', 'landscape');
+fetchRow(`${API}/tv/popular?api_key=${API_KEY}&with_genres=16`, 'anime-list', 'tv', 'portrait');
+fetchRow(`${API}/discover/movie?api_key=${API_KEY}&region=NG&sort_by=popularity.desc`, 'african-list', 'movie', 'landscape');
+
+/* ── SEE ALL PAGES ── */
+window.seeAll = (genre, title, type) => {
+  window.location.href = `browse.html?genre=${genre}&title=${title}&type=${type}`;
+};
 
 /* ── TOAST ── */
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.innerText = msg;
+  t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* ── FILTER & LOAD ── */
-window.filterGenre = (id, el) => {
-  document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  const url = id === 0 
-    ? `${API}/trending/movie/week?api_key=${API_KEY}`
-    : `${API}/discover/movie?api_key=${API_KEY}&with_genres=${id}`;
-  fetchRow(url, 'trending-list', 'movie', 'landscape');
-};
-
-window.seeAll = (genreId, label, type) => {
-  const url = genreId
-    ? `${API}/discover/${type}?api_key=${API_KEY}&with_genres=${genreId}`
-    : `${API}/trending/${type}/week?api_key=${API_KEY}`;
-  fetchRow(url, 'trending-list', type, 'landscape');
-};
-
-window.goWatch = (id, type) => {
-  window.location.href = `signup.html?redirect=watch&id=${id}&type=${type}`;
-};
-
-/* ── INIT ── */
-window.addEventListener('DOMContentLoaded', () => {
-  checkTrialStatus();
-  loadHero();
-  fetchRow(`${API}/trending/movie/week?api_key=${API_KEY}`, 'trending-list', 'movie', 'landscape');
-  fetchRow(`${API}/movie/top_rated?api_key=${API_KEY}`, 'top-list', 'movie', 'portrait');
-  fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=28`, 'action-list', 'movie', 'landscape');
-  fetchRow(`${API}/trending/tv/week?api_key=${API_KEY}`, 'tv-list', 'tv', 'portrait');
-  fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=27`, 'horror-list', 'movie', 'landscape');
-  fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=35`, 'comedy-list', 'movie', 'landscape');
-  fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=16`, 'anime-list', 'tv', 'portrait');
-  fetchRow(`${API}/trending/movie/week?api_key=${API_KEY}`, 'african-list', 'movie', 'landscape');
+/* ── SIGN OUT ── */
+document.getElementById('nav-signout-btn')?.addEventListener('click', () => {
+  if (confirm('Sign out and return to home?')) {
+    localStorage.removeItem('cinemanest-trial');
+    window.location.href = 'index.html';
+  }
 });
-
-// Expose globals
-window.openMyList = openMyList;
-window.closeMyList = closeMyList;
-window.toggleMyList = toggleMyList;
-window.removeFromMyList = removeFromMyList;
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.openTrailer = openTrailer;
-window.closeTrailer = closeTrailer;
-window.goToPayment = goToPayment;
-window.handleSignOut = handleSignOut;
 </script>
 
 </body>
