@@ -1,6 +1,10 @@
-your-repo-root/
-  .well-known/
-    assetlinks.json   ← this file
-  index.html
-  watch.html
-  ...
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "net.app_2bd.cinemanest.twa",
+    "sha256_cert_fingerprints": [
+      "5F:02:82:DE:5E:0F:7E:09:50:70:9B:41:D2:92:D3:50:FD:3E:4C:4E:37:4E:2A:8F:EB:A5:D3:98:FD:5D:AF:24"
+    ]
+  }
+}]
