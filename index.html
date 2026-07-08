@@ -58,7 +58,7 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 .profile-trigger:hover{color:#fff;border-color:rgba(255,255,255,.25);}
 .profile-trigger svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;}
 
-/* ─── FULLSCREEN SEARCH MODAL ─── */
+/* ─── SEARCH MODAL ─── */
 .search-modal{position:fixed;inset:0;background:rgba(8,8,8,.98);backdrop-filter:blur(16px);z-index:10000;display:none;opacity:0;transition:opacity .3s ease;}
 .search-modal.open{display:block;opacity:1;}
 .search-top{max-width:800px;margin:80px auto 0;padding:0 24px;display:flex;align-items:center;gap:16px;position:relative;}
@@ -102,7 +102,7 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 .shelf-row{position:relative;}
 .shelf-header{display:flex;align-items:center;justify-content:between;margin-bottom:14px;}
 .shelf-title{font-size:18px;font-weight:600;letter-spacing:0.5px;color:#fff;}
-.shelf-seeall{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;margin-left:auto;transition:color .2s;}
+.shelf-seeall{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;margin-left:auto;cursor:pointer;transition:color .2s;}
 .shelf-seeall:hover{color:var(--red);}
 
 .shelf-scroll-wrap{position:relative;}
@@ -120,6 +120,39 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 .card-sub{font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;}
 .card-rating{color:#fbbf24;font-weight:600;}
 
+/* ─── TOP 10 RANK LAYOUT ENGINE ─── */
+.card-rank-wrapper {
+  position: relative;
+  flex: 0 0 calc(100% / 5.5);
+  min-width: 190px;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: flex-end;
+  padding-left: 45px; /* Creates layout pocket space for numbers */
+}
+.card-rank-wrapper .card-portrait {
+  flex: 1;
+  width: 100%;
+}
+.rank-number {
+  position: absolute;
+  left: -15px;
+  bottom: -25px;
+  font-size: 150px;
+  font-weight: 900;
+  line-height: 1;
+  color: #080808;
+  -webkit-text-stroke: 4px rgba(255,255,255,0.75);
+  text-shadow: 0 0 30px rgba(0,0,0,0.8);
+  user-select: none;
+  z-index: 5;
+  font-family: Arial, sans-serif; /* Thick structural body variant */
+  transition: -webkit-text-stroke 0.3s;
+}
+.card-rank-wrapper:hover .rank-number {
+  -webkit-text-stroke: 4px var(--red);
+}
+
 /* ─── CARDS DESIGN (LANDSCAPE) ─── */
 .card-landscape{flex:0 0 calc(100% / 4);min-width:240px;scroll-snap-align:start;position:relative;border-radius:var(--radius);overflow:hidden;background:var(--surface);aspect-ratio:16/9;cursor:pointer;transition:transform .3s cubic-bezier(.165,.84,.44,1), box-shadow .3s;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,.03);}
 .card-landscape img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
@@ -128,11 +161,44 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 .card-landscape .card-meta{opacity:1;background:linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.2) 60%, transparent 100%);padding:30px 14px 12px;}
 .card-landscape .card-title{font-size:14px;margin-bottom:3px;}
 
-/* ─── SKELETON LOADING PLACEHOLDERS ─── */
+/* ─── STUDIOS & PLATFORMS GRID ─── */
+.studios-track { display: flex; gap: 16px; overflow-x: auto; padding: 10px 0; }
+.studios-track::-webkit-scrollbar { display: none; }
+.studio-card {
+  flex: 0 0 180px;
+  aspect-ratio: 16/9;
+  background: radial-gradient(circle, #1a1a1a 0%, #111 100%);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.3s cubic-bezier(.165,.84,.44,1);
+}
+.studio-card:hover {
+  transform: scale(1.05);
+  border-color: rgba(255,255,255,0.2);
+  background: #181818;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+}
+.studio-card span {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  opacity: 0.7;
+  text-transform: uppercase;
+  transition: opacity 0.3s;
+}
+.studio-card:hover span { opacity: 1; }
+
+/* ─── SKELETON PLACEHOLDERS ─── */
 .skel-card{background:linear-gradient(90deg, #121212 25%, #1c1c1c 50%, #121212 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius);}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ─── DYNAMIC OVERLAYS / SIDE MODALS ─── */
+/* ─── SIDE MODALS ─── */
 .side-panel{position:fixed;top:0;right:0;bottom:0;width:340px;background:var(--surface);border-left:1px solid rgba(255,255,255,.06);z-index:10001;transform:translateX(100%);transition:transform .3s cubic-bezier(.165,.84,.44,1);padding:40px 24px;display:flex;flex-direction:column;}
 .side-panel.open{transform:translateX(0);}
 .side-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:10000;display:none;}
@@ -161,10 +227,11 @@ footer p{font-size:12px;color:var(--muted);line-height:1.6;max-width:600px;margi
 footer a{font-size:12px;color:var(--text);text-decoration:none;opacity:.4;transition:opacity .2s;}
 footer a:hover{opacity:1;color:var(--red);}
 
-/* ─── RESPONSIVE GEOMETRY ─── */
+/* ─── RESPONSIVE ─── */
 @media (max-width:1200px){
   .card-portrait{flex:0 0 calc(100% / 5);}
   .card-landscape{flex:0 0 calc(100% / 3);}
+  .card-rank-wrapper{flex:0 0 calc(100% / 4.2);}
 }
 @media (max-width:800px){
   .nav-inner{padding:0 20px;}
@@ -175,11 +242,13 @@ footer a:hover{opacity:1;color:var(--red);}
   .main-content{padding:0 20px 60px;gap:28px;}
   .card-portrait{flex:0 0 calc(100% / 3.5);min-width:120px;}
   .card-landscape{flex:0 0 calc(100% / 2);min-width:180px;}
-  footer{padding:30px 20px;}
+  .card-rank-wrapper{flex:0 0 calc(100% / 2.5);min-width:150px;}
 }
 @media (max-width:480px){
   .card-portrait{flex:0 0 calc(100% / 2.3);min-width:100px;}
   .card-landscape{flex:0 0 calc(100% / 1.3);min-width:160px;}
+  .card-rank-wrapper{flex:0 0 calc(100% / 1.6);min-width:130px;padding-left:35px;}
+  .rank-number{font-size:100px;bottom:-15px;left:-10px;}
 }
 </style>
 </head>
@@ -197,11 +266,6 @@ footer a:hover{opacity:1;color:var(--red);}
         <circle cx="22" cy="34" r="2.5" fill="#e50914"/>
         <circle cx="10" cy="22" r="2.5" fill="#e50914"/>
         <circle cx="34" cy="22" r="2.5" fill="#e50914"/>
-        <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke="#e50914" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="30.5" y1="13.5" x2="26.5" y2="17.5" stroke="#e50914" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="13.5" y1="30.5" x2="17.5" y2="26.5" stroke="#e50914" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="30.5" y1="30.5" x2="26.5" y2="26.5" stroke="#e50914" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M10 35 Q22 28 34 35" stroke="#e50914" stroke-width="2" fill="none" stroke-linecap="round"/>
       </svg>
     </a>
 
@@ -212,7 +276,7 @@ footer a:hover{opacity:1;color:var(--red);}
     </div>
 
     <div class="nav-right">
-      <button class="search-trigger" onclick="toggleSearch(true)" aria-label="Search">
+      <button class="search-trigger" onclick="toggleSearch(true)">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
       <div class="profile-trigger" onclick="toggleProfilePanel(true)">
@@ -242,38 +306,47 @@ footer a:hover{opacity:1;color:var(--red);}
     <span class="genre-pill" onclick="filterGenre('35', this)">Comedy</span>
     <span class="genre-pill" onclick="filterGenre('18', this)">Drama</span>
     <span class="genre-pill" onclick="filterGenre('27', this)">Horror</span>
-    <span class="genre-pill" onclick="filterGenre('10749', this)">Romance</span>
     <span class="genre-pill" onclick="filterGenre('878', this)">Sci-Fi</span>
+    <span class="genre-pill" onclick="filterGenre('53', this)">Thriller</span>
+    <span class="genre-pill" onclick="filterGenre('10749', this)">Romance</span>
   </div>
 </div>
 
 <main class="main-content" id="shelves-container">
-  <div class="shelf-row" id="shelf-continue" style="display:none; margin-bottom: 10px;">
-    <div class="shelf-header">
-      <h2 class="shelf-title">Continue Watching</h2>
-    </div>
+  
+  <div class="shelf-row" id="shelf-continue" style="display:none;">
+    <div class="shelf-header"><h2 class="shelf-title">Continue Watching</h2></div>
     <div class="shelf-scroll-wrap">
       <div class="shelf-track" id="continue-list"></div>
     </div>
   </div>
 
   <div class="shelf-row" id="row-trending">
-    <div class="shelf-header">
-      <h2 class="shelf-title">Trending Now</h2>
-    </div>
+    <div class="shelf-header"><h2 class="shelf-title">Trending Right Now</h2></div>
     <div class="shelf-scroll-wrap">
       <div class="shelf-track" id="trending-list"></div>
     </div>
   </div>
 
-  <div class="shelf-row" id="row-top">
-    <div class="shelf-header">
-      <h2 class="shelf-title">Highly Rated</h2>
-      <a class="shelf-seeall" onclick="seeAll('top_rated','Highly Rated','movie')">See All</a>
-    </div>
+  <div class="shelf-row" id="row-studios">
+    <div class="shelf-header"><h2 class="shelf-title">Studios & Platforms</h2></div>
     <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="top-list"></div>
+      <div class="studios-track">
+        <div class="studio-card" onclick="seeAll('all','Netflix','movie')"><span>Netflix</span></div>
+        <div class="studio-card" onclick="seeAll('all','Disney+','movie')"><span>Disney+</span></div>
+        <div class="studio-card" onclick="seeAll('all','HBO Max','movie')"><span>HBO Max</span></div>
+        <div class="studio-card" onclick="seeAll('all','Marvel','movie')"><span>Marvel</span></div>
+        <div class="studio-card" onclick="seeAll('all','Paramount','movie')"><span>Paramount</span></div>
+      </div>
     </div>
+  </div>
+
+  <div class="shelf-row" id="row-tv">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Popular TV Shows</h2>
+      <a class="shelf-seeall" onclick="seeAll('popular','Popular TV Shows','tv')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="tv-list"></div></div>
   </div>
 
   <div class="shelf-row" id="row-action">
@@ -281,29 +354,7 @@ footer a:hover{opacity:1;color:var(--red);}
       <h2 class="shelf-title">Action Blockbusters</h2>
       <a class="shelf-seeall" onclick="seeAll('28','Action Blockbusters','movie')">See All</a>
     </div>
-    <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="action-list"></div>
-    </div>
-  </div>
-
-  <div class="shelf-row" id="row-tv">
-    <div class="shelf-header">
-      <h2 class="shelf-title">Popular TV Series</h2>
-      <a class="shelf-seeall" onclick="seeAll('popular','Popular TV Series','tv')">See All</a>
-    </div>
-    <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="tv-list"></div>
-    </div>
-  </div>
-
-  <div class="shelf-row" id="row-horror">
-    <div class="shelf-header">
-      <h2 class="shelf-title">Horror & Thrillers</h2>
-      <a class="shelf-seeall" onclick="seeAll('27','Horror & Thrillers','movie')">See All</a>
-    </div>
-    <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="horror-list"></div>
-    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="action-list"></div></div>
   </div>
 
   <div class="shelf-row" id="row-comedy">
@@ -311,30 +362,81 @@ footer a:hover{opacity:1;color:var(--red);}
       <h2 class="shelf-title">Comedy Hits</h2>
       <a class="shelf-seeall" onclick="seeAll('35','Comedy Hits','movie')">See All</a>
     </div>
-    <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="comedy-list"></div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="comedy-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-drama">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Drama Masterpieces</h2>
+      <a class="shelf-seeall" onclick="seeAll('18','Drama Masterpieces','movie')">See All</a>
     </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="drama-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-horror">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Horror & Chillers</h2>
+      <a class="shelf-seeall" onclick="seeAll('27','Horror & Chillers','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="horror-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-scifi">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Sci-Fi & Fantasy</h2>
+      <a class="shelf-seeall" onclick="seeAll('878','Sci-Fi & Fantasy','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="scifi-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-thriller">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Edge-of-Your-Seat Thrillers</h2>
+      <a class="shelf-seeall" onclick="seeAll('53','Edge-of-Your-Seat Thrillers','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="thriller-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-romance">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Romantic Tales</h2>
+      <a class="shelf-seeall" onclick="seeAll('10749','Romantic Tales','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="romance-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-animation">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Animation Favorites</h2>
+      <a class="shelf-seeall" onclick="seeAll('16','Animation Favorites','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="animation-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-crime">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Crime & Mystery</h2>
+      <a class="shelf-seeall" onclick="seeAll('80','Crime & Mystery','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="crime-list"></div></div>
+  </div>
+
+  <div class="shelf-row" id="row-documentary">
+    <div class="shelf-header">
+      <h2 class="shelf-title">Documentaries</h2>
+      <a class="shelf-seeall" onclick="seeAll('99','Documentaries','movie')">See All</a>
+    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="documentary-list"></div></div>
   </div>
 
   <div class="shelf-row" id="row-anime">
     <div class="shelf-header">
-      <h2 class="shelf-title">Anime Collections</h2>
-      <a class="shelf-seeall" onclick="seeAll('16','Anime Collections','tv')">See All</a>
+      <h2 class="shelf-title">Trending Anime</h2>
+      <a class="shelf-seeall" onclick="seeAll('16','Trending Anime','tv')">See All</a>
     </div>
-    <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="anime-list"></div>
-    </div>
+    <div class="shelf-scroll-wrap"><div class="shelf-track" id="anime-list"></div></div>
   </div>
 
-  <div class="shelf-row" id="row-african">
-    <div class="shelf-header">
-      <h2 class="shelf-title">African Stories</h2>
-      <a class="shelf-seeall" onclick="seeAll('african','African Stories','movie')">See All</a>
-    </div>
-    <div class="shelf-scroll-wrap">
-      <div class="shelf-track" id="african-list"></div>
-    </div>
-  </div>
 </main>
 
 <div class="side-panel-overlay" id="panel-overlay" onclick="toggleProfilePanel(false)"></div>
@@ -350,12 +452,8 @@ footer a:hover{opacity:1;color:var(--red);}
     </div>
   </div>
   <div class="panel-menu">
-    <a href="pricing.html" class="panel-btn" id="panel-premium-btn">
-      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Upgrade to Premium
-    </a>
-    <button class="panel-btn danger" id="panel-logout-btn" onclick="handleAuthAction()" style="margin-top:20px;">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <a href="pricing.html" class="panel-btn" id="panel-premium-btn">Upgrade to Premium</a>
+    <button class="panel-btn danger" id="panel-logout-btn" onclick="handleAuthAction()">
       <span id="logout-label">Sign In</span>
     </button>
   </div>
@@ -364,8 +462,7 @@ footer a:hover{opacity:1;color:var(--red);}
 <div class="search-modal" id="search-modal">
   <div class="search-top">
     <div class="search-input-wrap">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" class="search-input" id="search-field" placeholder="Search movies, television series..." autocomplete="off">
+      <input type="text" class="search-input" id="search-field" placeholder="Search files, genres, titles..." autocomplete="off">
     </div>
     <button class="search-close" onclick="toggleSearch(false)">Cancel</button>
   </div>
@@ -375,7 +472,7 @@ footer a:hover{opacity:1;color:var(--red);}
 </div>
 
 <footer>
-  <p>This site does not host files on its server. Content layers link exclusively via modular connection channels to foreign streaming providers.</p>
+  <p>This site does not host files on its server. Content layers link exclusively via connection channels to foreign streaming providers.</p>
   <a href="mailto:cinemanest@proton.me">cinemanest@proton.me</a>
 </footer>
 
@@ -407,37 +504,26 @@ footer a:hover{opacity:1;color:var(--red);}
   let currentMainType = 'all'; 
   let currentGenreFilter = 'all';
 
-  // Structural Skeletons Generation
-  function showShimmerSkeletons(targetId, count, landscape = false) {
+  function showShimmerSkeletons(targetId, count) {
     const el = document.getElementById(targetId);
     if(!el) return;
     let code = '';
-    for(let i=0; i<count; i++) {
-      code += `<div class="skel-card ${landscape ? 'card-landscape' : 'card-portrait'}"></div>`;
-    }
+    for(let i=0; i<count; i++) code += `<div class="skel-card card-portrait"></div>`;
     el.innerHTML = code;
   }
 
   function initAllSkeletons() {
-    showShimmerSkeletons('trending-list', 7, false);
-    showShimmerSkeletons('top-list', 7, false);
-    showShimmerSkeletons('action-list', 4, true);
-    showShimmerSkeletons('tv-list', 7, false);
-    showShimmerSkeletons('horror-list', 4, true);
-    showShimmerSkeletons('comedy-list', 4, true);
-    showShimmerSkeletons('anime-list', 7, false);
-    showShimmerSkeletons('african-list', 4, true);
+    const lists = ['trending-list','tv-list','action-list','comedy-list','drama-list','horror-list','scifi-list','thriller-list','romance-list','animation-list','crime-list','documentary-list','anime-list'];
+    lists.forEach(id => showShimmerSkeletons(id, 7));
   }
   initAllSkeletons();
 
-  // Scroll Behavior Navbar Animation
   window.addEventListener('scroll', () => {
     const nav = document.getElementById('navbar');
     if(window.scrollY > 40) nav.classList.add('scrolled');
     else nav.classList.remove('scrolled');
   });
 
-  // UI Interactive Triggers
   window.toggleProfilePanel = (open) => {
     document.getElementById('profile-panel').classList.toggle('open', open);
     document.getElementById('panel-overlay').classList.toggle('open', open);
@@ -446,75 +532,24 @@ footer a:hover{opacity:1;color:var(--red);}
   window.toggleSearch = (open) => {
     const m = document.getElementById('search-modal');
     m.classList.toggle('open', open);
-    if(open) {
-      document.getElementById('search-field').focus();
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    if(open) document.getElementById('search-field').focus();
   };
 
-  // Toast Messaging Core
   window.showToast = (msg) => {
     const c = document.getElementById('toast-container');
     const t = document.createElement('div');
-    t.className = 'toast';
-    t.textContent = msg;
+    t.className = 'toast'; t.textContent = msg;
     c.appendChild(t);
     setTimeout(() => t.classList.add('show'), 50);
-    setTimeout(() => {
-      t.classList.remove('show');
-      setTimeout(() => t.remove(), 400);
-    }, 3000);
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3000);
   };
 
-  // Auth Status Listeners
   onAuthStateChanged(auth, async (user) => {
-    const emailEl = document.getElementById('panel-email');
-    const statusEl = document.getElementById('panel-status');
-    const labelEl = document.getElementById('logout-label');
-    const premBtn = document.getElementById('panel-premium-btn');
-    const avatar = document.getElementById('avatar-letters');
-
     if (user) {
-      emailEl.textContent = user.email;
-      labelEl.textContent = 'Sign Out';
-      avatar.textContent = user.email.slice(0,2).toUpperCase();
-      statusEl.textContent = 'Checking Active Plan...';
-      
+      document.getElementById('panel-email').textContent = user.email;
+      document.getElementById('logout-label').textContent = 'Sign Out';
       loadCloudHistory(user);
-
-      try {
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        if(snap.exists()) {
-          const data = snap.data();
-          if(data.plan === 'active' && data.subscriptionEnd && new Date(data.subscriptionEnd) > new Date()) {
-            statusEl.textContent = 'Premium Pass Member';
-            statusEl.style.color = '#4ade80';
-            if(premBtn) premBtn.style.display = 'none';
-            localStorage.setItem('cinemanest-paid', 'true');
-          } else if(data.trialEnd && new Date(data.trialEnd) > new Date()) {
-            statusEl.textContent = 'Trial Period Active';
-            localStorage.removeItem('cinemanest-paid');
-          } else {
-            statusEl.textContent = 'Account Access Paused';
-            localStorage.removeItem('cinemanest-paid');
-          }
-        } else {
-          statusEl.textContent = 'Free Account Layer';
-          localStorage.removeItem('cinemanest-paid');
-        }
-      } catch {
-        statusEl.textContent = 'Offline Mode Active';
-      }
     } else {
-      emailEl.textContent = 'Guest Mode';
-      statusEl.textContent = 'Unauthenticated Session';
-      statusEl.style.color = '';
-      labelEl.textContent = 'Sign In / Register';
-      avatar.textContent = '?';
-      if(premBtn) premBtn.style.display = 'flex';
-      localStorage.removeItem('cinemanest-paid');
       loadLocalHistory();
     }
   });
@@ -522,269 +557,132 @@ footer a:hover{opacity:1;color:var(--red);}
   window.handleAuthAction = async () => {
     if(auth.currentUser) {
       await signOut(auth);
-      window.showToast('Session logged out successfully.');
+      window.showToast('Logged out.');
       toggleProfilePanel(false);
     } else {
       window.location.href = 'signup.html';
     }
   };
 
-  // Content Engine Fetch Mechanics
-  async function fetchRow(url, containerId, type = 'movie', style = 'portrait') {
+  async function fetchRow(url, containerId, type = 'movie') {
     try {
       const res = await fetch(url);
       const data = await res.json();
-      const list = data.results || [];
+      const list = (data.results || []).slice(0, 12);
       const el = document.getElementById(containerId);
       if(!el) return;
 
-      if(!list.length) {
-        el.innerHTML = '<p style="padding:10px; color:var(--muted); font-size:13px;">No items matches this filter.</p>';
-        return;
-      }
-
       el.innerHTML = list.map(item => {
         const title = item.title || item.name || '';
-        const imgPath = style === 'landscape' ? (item.backdrop_path || item.poster_path) : (item.poster_path || item.backdrop_path);
-        const img = imgPath ? IMG + imgPath : '';
+        const img = item.poster_path ? IMG + item.poster_path : 'https://placehold.co/400x600/111/222?text=No+Image';
         const year = (item.release_date || item.first_air_date || '').slice(0,4);
         const rating = item.vote_average ? item.vote_average.toFixed(1) : '0.0';
         
         return `
-          <a class="${style === 'landscape' ? 'card-landscape' : 'card-portrait'}" href="watch.html?id=${item.id}&type=${type}">
-            <img src="${img}" alt="${title}" loading="lazy" onerror="this.src='https://placehold.co/400x600/111/222?text=Cinema+Nest'">
+          <a class="card-portrait" href="watch.html?id=${item.id}&type=${type}">
+            <img src="${img}" alt="${title}" loading="lazy">
             <div class="card-meta">
               <div class="card-title">${title}</div>
-              <div class="card-sub">
-                <span>${year}</span>
-                <span class="card-rating">★ ${rating}</span>
-              </div>
+              <div class="card-sub"><span>${year}</span><span class="card-rating">★ ${rating}</span></div>
             </div>
           </a>`;
       }).join('');
-    } catch {
-      const el = document.getElementById(containerId);
-      if(el) el.innerHTML = '<p style="padding:10px; color:var(--muted); font-size:13px;">Error fetching layout assets.</p>';
-    }
+    } catch {}
   }
 
-  // Spotlight Header Core
+  // Loaded Top-10 Layout Render Function
   async function loadTrending() {
     try {
       const res = await fetch(`${API}/trending/all/day?api_key=${API_KEY}`);
       const data = await res.json();
       const list = data.results || [];
       
-      // Inject inside trending shelfs
       const trendEl = document.getElementById('trending-list');
       if(trendEl && list.length) {
-        trendEl.innerHTML = list.map(item => {
+        // Build Top 10 Structure mapping index items natively
+        trendEl.innerHTML = list.slice(0, 10).map((item, idx) => {
           const type = item.media_type === 'tv' ? 'tv' : 'movie';
           const title = item.title || item.name || '';
           const img = item.poster_path ? IMG + item.poster_path : '';
-          const year = (item.release_date || item.first_air_date || '').slice(0,4);
-          const rating = item.vote_average ? item.vote_average.toFixed(1) : '0.0';
           return `
-            <a class="card-portrait" href="watch.html?id=${item.id}&type=${type}">
-              <img src="${img}" alt="${title}" loading="lazy">
-              <div class="card-meta">
-                <div class="card-title">${title}</div>
-                <div class="card-sub">
-                  <span>${year}</span>
-                  <span class="card-rating">★ ${rating}</span>
+            <div class="card-rank-wrapper">
+              <div class="rank-number">${idx + 1}</div>
+              <a class="card-portrait" href="watch.html?id=${item.id}&type=${type}">
+                <img src="${img}" alt="${title}" loading="lazy">
+                <div class="card-meta">
+                  <div class="card-title">${title}</div>
                 </div>
-              </div>
-            </a>`;
+              </a>
+            </div>`;
         }).join('');
       }
 
-      // Feature random item onto high resolution Billboard Banner
-      const valid = list.filter(x => x.backdrop_path && (x.title || x.name));
-      if(!valid.length) return;
-      const featured = valid[Math.floor(Math.random() * Math.min(valid.length, 6))];
-      
-      document.getElementById('hero-banner').style.backgroundImage = `url('${IMG_ORIG + featured.backdrop_path}')`;
-      const content = document.getElementById('hero-content');
-      const t = featured.title || featured.name || '';
-      const type = featured.media_type === 'tv' ? 'tv' : 'movie';
-      const year = (featured.release_date || featured.first_air_date || '').slice(0,4);
-      const rating = featured.vote_average ? featured.vote_average.toFixed(1) : '0.0';
-
-      content.querySelector('.hero-title').textContent = t;
-      content.querySelector('.hero-rating').innerHTML = `★ ${rating}`;
-      document.getElementById('hero-year').textContent = year;
-      content.querySelector('.hero-overview').textContent = featured.overview || '';
-      content.querySelector('.hero-btns').innerHTML = `
-        <a class="btn-play" href="watch.html?id=${featured.id}&type=${type}">
-          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> Watch Instantly
-        </a>
-        <a class="btn-info" href="watch.html?id=${featured.id}&type=${type}">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Info Overview
-        </a>`;
+      // Banner Feature Hook Injection
+      const featured = list[0];
+      if(featured) {
+        document.getElementById('hero-banner').style.backgroundImage = `url('${IMG_ORIG + featured.backdrop_path}')`;
+        const content = document.getElementById('hero-content');
+        content.querySelector('.hero-title').textContent = featured.title || featured.name;
+        content.querySelector('.hero-rating').innerHTML = `★ ${featured.vote_average.toFixed(1)}`;
+        document.getElementById('hero-year').textContent = (featured.release_date || featured.first_air_date || '').slice(0,4);
+        content.querySelector('.hero-overview').textContent = featured.overview;
+        content.querySelector('.hero-btns').innerHTML = `
+          <a class="btn-play" href="watch.html?id=${featured.id}&type=${featured.media_type || 'movie'}">Watch Now</a>`;
+      }
     } catch {}
   }
 
-  // Continue Watching Modules
   function renderHistoryShelf(items) {
     const row = document.getElementById('shelf-continue');
     const track = document.getElementById('continue-list');
     if(!items || !items.length) { row.style.display = 'none'; return; }
     row.style.display = 'block';
-    track.innerHTML = items.map(item => {
-      const title = item.title || '';
-      const img = item.backdrop_path || item.poster ? IMG + (item.backdrop_path || item.poster) : '';
-      return `
-        <a class="card-landscape" href="watch.html?id=${item.mediaId}&type=${item.mediaType}">
-          <img src="${img}" alt="${title}" loading="lazy">
-          <div class="card-meta">
-            <div class="card-title">${title}</div>
-            <div class="card-sub">
-              <span style="color:var(--red); font-weight:700; font-size:10px; letter-spacing:0.5px; text-transform:uppercase;">Resume Stream</span>
-            </div>
-          </div>
-        </a>`;
-    }).join('');
+    track.innerHTML = items.map(item => `
+      <a class="card-landscape" href="watch.html?id=${item.mediaId}&type=${item.mediaType}">
+        <img src="${IMG + item.backdrop_path}" alt="">
+        <div class="card-meta"><div class="card-title">${item.title}</div></div>
+      </a>`).join('');
   }
 
-  function loadLocalHistory() {
-    try {
-      const items = JSON.parse(localStorage.getItem('cinemanest-continue-watching')) || [];
-      renderHistoryShelf(items.slice(0, 5));
-    } catch { renderHistoryShelf([]); }
-  }
+  function loadLocalHistory() { try { renderHistoryShelf(JSON.parse(localStorage.getItem('cinemanest-continue-watching')) || []); } catch { renderHistoryShelf([]); } }
+  async function loadCloudHistory(user) { try { const q = query(collection(db, 'users', user.uid, 'watchHistory'), orderBy('watchedAt', 'desc'), limit(5)); const snap = await getDocs(q); const items = []; snap.forEach(d => items.push(d.data())); renderHistoryShelf(items); } catch { loadLocalHistory(); } }
 
-  async function loadCloudHistory(user) {
-    try {
-      const q = query(collection(db, 'users', user.uid, 'watchHistory'), orderBy('watchedAt', 'desc'), limit(5));
-      const snap = await getDocs(q);
-      const items = [];
-      snap.forEach(d => items.push(d.data()));
-      if(items.length) renderHistoryShelf(items);
-      else loadLocalHistory();
-    } catch { loadLocalHistory(); }
-  }
-
-  // Structural Navigation Tab Type Sorting Switcher
   window.switchMainType = (type, btn) => {
     currentMainType = type;
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     btn.classList.add('active');
-    applyCombinedFilters();
+    applyFilters();
   };
 
-  // Genre Filters Grid Controller Logic
   window.filterGenre = (genreId, btn) => {
     currentGenreFilter = genreId;
     document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    applyCombinedFilters();
+    applyFilters();
   };
 
-  function applyCombinedFilters() {
-    initAllSkeletons();
-    
-    // Conditionally display rows according to context parameters
-    const showTv = (currentMainType === 'all' || currentMainType === 'tv');
-    const showMovies = (currentMainType === 'all' || currentMainType === 'movie');
-
-    document.getElementById('row-trending').style.display = (currentGenreFilter === 'all') ? 'block' : 'none';
-    document.getElementById('row-top').style.display = showMovies ? 'block' : 'none';
-    document.getElementById('row-tv').style.display = showTv ? 'block' : 'none';
-    document.getElementById('row-anime').style.display = showTv ? 'block' : 'none';
-    document.getElementById('row-action').style.display = showMovies ? 'block' : 'none';
-    document.getElementById('row-horror').style.display = showMovies ? 'block' : 'none';
-    document.getElementById('row-comedy').style.display = showMovies ? 'block' : 'none';
-    document.getElementById('row-african').style.display = showMovies ? 'block' : 'none';
-
-    if (currentGenreFilter === 'all') {
-      fetchRow(`${API}/movie/top_rated?api_key=${API_KEY}`, 'top-list', 'movie', 'portrait');
-      fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=28&sort_by=popularity.desc`, 'action-list', 'movie', 'landscape');
-      fetchRow(`${API}/tv/popular?api_key=${API_KEY}`, 'tv-list', 'tv', 'portrait');
-      fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=27&sort_by=popularity.desc`, 'horror-list', 'movie', 'landscape');
-      fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=35&sort_by=popularity.desc`, 'comedy-list', 'movie', 'landscape');
-      fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc`, 'anime-list', 'tv', 'portrait');
-      fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_origin_country=NG|GH|KE|ZA|EG&sort_by=popularity.desc`, 'african-list', 'movie', 'landscape');
-    } else {
-      // Isolate display to generic target types matched with explicit sub-genres
-      if(showMovies) {
-        fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=${currentGenreFilter}&sort_by=popularity.desc`, 'top-list', 'movie', 'portrait');
-        fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=${currentGenreFilter}&sort_by=vote_count.desc`, 'action-list', 'movie', 'landscape');
-      }
-      if(showTv) {
-        fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=${currentGenreFilter}&sort_by=popularity.desc`, 'tv-list', 'tv', 'portrait');
-        fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=${currentGenreFilter}&sort_by=vote_average.desc`, 'anime-list', 'tv', 'portrait');
-      }
-    }
+  function applyFilters() {
+    const rows = ['row-trending','row-studios','row-tv','row-action','row-comedy','row-drama','row-horror','row-scifi','row-thriller','row-romance','row-animation','row-crime','row-documentary','row-anime'];
+    rows.forEach(r => document.getElementById(r).style.display = currentGenreFilter === 'all' ? 'block' : 'none');
   }
 
-  // Interactive Live Search Modifiers
-  const searchInput = document.getElementById('search-field');
-  let searchDebounceTimeout = null;
+  window.seeAll = (genre, title, type) => { window.location.href = `browse.html?genre=${genre}&title=${title}&type=${type}`; };
 
-  searchInput.addEventListener('input', (e) => {
-    clearTimeout(searchDebounceTimeout);
-    const q = e.target.value.trim();
-    if(!q) {
-      document.getElementById('search-results-grid').innerHTML = '';
-      return;
-    }
-    searchDebounceTimeout = setTimeout(() => executeLiveQuery(q), 400);
-  });
-
-  async function executeLiveQuery(queryStr) {
-    const grid = document.getElementById('search-results-grid');
-    grid.innerHTML = '<div class="skel-card card-portrait"></div>'.repeat(6);
-    try {
-      const res = await fetch(`${API}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(queryStr)}`);
-      const data = await res.json();
-      const results = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv');
-
-      if(!results.length) {
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--muted); font-size:14px; padding-top:40px;">No exact title pairings found.</p>';
-        return;
-      }
-
-      grid.innerHTML = results.map(item => {
-        const type = item.media_type;
-        const title = item.title || item.name || '';
-        const img = item.poster_path ? IMG + item.poster_path : '';
-        const year = (item.release_date || item.first_air_date || '').slice(0,4);
-        return `
-          <a class="card-portrait" href="watch.html?id=${item.id}&type=${type}">
-            <img src="${img}" alt="${title}" onerror="this.src='https://placehold.co/400x600/111/222?text=Cinema+Nest'">
-            <div class="card-meta">
-              <div class="card-title">${title}</div>
-              <div class="card-sub"><span>${year}</span><span>${type.toUpperCase()}</span></div>
-            </div>
-          </a>`;
-      }).join('');
-    } catch {
-      grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--muted);">Service layer validation timed out.</p>';
-    }
-  }
-
-  window.seeAll = (genre, title, type) => {
-    window.location.href = `browse.html?genre=${genre}&title=${title}&type=${type}`;
-  };
-
-  // Async Execution Initialization
   Promise.all([
     loadTrending(),
-    fetchRow(`${API}/movie/top_rated?api_key=${API_KEY}`, 'top-list', 'movie', 'portrait'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=28&sort_by=popularity.desc`, 'action-list', 'movie', 'landscape'),
-    fetchRow(`${API}/tv/popular?api_key=${API_KEY}`, 'tv-list', 'tv', 'portrait'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=27&sort_by=popularity.desc`, 'horror-list', 'movie', 'landscape'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=35&sort_by=popularity.desc`, 'comedy-list', 'movie', 'landscape'),
-    fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc`, 'anime-list', 'tv', 'portrait'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_origin_country=NG|GH|KE|ZA|EG&sort_by=popularity.desc`, 'african-list', 'movie', 'landscape'),
+    fetchRow(`${API}/tv/popular?api_key=${API_KEY}`, 'tv-list', 'tv'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=28`, 'action-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=35`, 'comedy-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=18`, 'drama-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=27`, 'horror-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=878`, 'scifi-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=53`, 'thriller-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=10749`, 'romance-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=16`, 'animation-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=80`, 'crime-list'),
+    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=99`, 'documentary-list'),
+    fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja`, 'anime-list', 'tv'),
   ]);
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(()=>{});
-  });
-}
 </script>
 </body>
 </html>
