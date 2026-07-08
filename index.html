@@ -22,83 +22,125 @@
   --muted:#888;
   --muted2:#555;
   --radius:12px;
-  --nav-h:64px;
+  --sidebar-w:240px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-serif;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-serif;display:flex;min-height:100vh;}
 
 /* ─── TOAST ─── */
 .toast-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
 .toast{background:rgba(20,20,20,.95);border:1px solid rgba(255,255,255,.08);color:#fff;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(10px);transform:translateY(20px);opacity:0;transition:all .3s cubic-bezier(.175,.885,.32,1.275);display:flex;align-items:center;gap:8px;}
 .toast.show{transform:translateY(0);opacity:1;}
 
-/* ─── NAVIGATION ─── */
-.nav-wrap{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:linear-gradient(to bottom, rgba(8,8,8,.9) 0%, rgba(8,8,8,.7) 70%, transparent 100%);backdrop-filter:blur(12px);z-index:1000;border-bottom:1px solid rgba(255,255,255,.04);transition:background .3s, border-color .3s;}
-.nav-wrap.scrolled{background:#080808;border-bottom:1px solid rgba(255,255,255,.08);}
-.nav-inner{max-width:1400px;margin:0 auto;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
-.logo-box{display:flex;align-items:center;text-decoration:none;}
+/* ─── SIDEBAR LEFT NAVIGATION ─── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: #040404;
+  border-right: 1px solid rgba(255,255,255,.03);
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  z-index: 1000;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  margin-bottom: 32px;
+  padding-left: 12px;
+}
+.sidebar-logo span {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--text);
+}
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted2);
+  letter-spacing: 1px;
+  padding: 16px 12px 6px;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sidebar-item:hover, .sidebar-item.active {
+  color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+.sidebar-item svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+}
 
-.nav-center{display:flex;align-items:center;gap:32px;}
-.nav-link{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:0.5px;transition:color .2s;cursor:pointer;}
-.nav-link:hover, .nav-link.active{color:#fff;}
-
-.nav-right{display:flex;align-items:center;gap:20px;}
-.search-trigger{background:none;border:none;color:#fff;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;opacity:.8;transition:opacity .2s;}
-.search-trigger:hover{opacity:1;}
-.search-trigger svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.5;}
-
-.profile-trigger{width:36px;height:36px;border-radius:50%;background:var(--surface2);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .2s;}
-.profile-trigger:hover{color:#fff;border-color:rgba(255,255,255,.25);}
-.profile-trigger svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;}
-
-/* ─── SEARCH MODAL ─── */
-.search-modal{position:fixed;inset:0;background:rgba(8,8,8,.98);backdrop-filter:blur(16px);z-index:10000;display:none;opacity:0;transition:opacity .3s ease;}
-.search-modal.open{display:block;opacity:1;}
-.search-top{max-width:800px;margin:80px auto 0;padding:0 24px;display:flex;align-items:center;gap:16px;position:relative;}
-.search-input-wrap{flex:1;position:relative;}
-.search-input-wrap svg{position:absolute;left:20px;top:50%;transform:translateY(-50%);width:22px;height:22px;stroke:var(--muted);fill:none;stroke-width:2.5;}
-.search-input{width:100%;background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:30px;padding:16px 24px 16px 56px;color:#fff;font-family:inherit;font-size:18px;outline:none;transition:border-color .2s, box-shadow .2s;}
-.search-input:focus{border-color:var(--red);box-shadow:0 0 0 4px var(--red-glow);}
-.search-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:10px;transition:color .2s;}
-.search-close:hover{color:#fff;}
-.search-results-box{max-width:1000px;margin:40px auto 0;padding:0 24px 80px;height:calc(100vh - 240px);overflow-y:auto;}
-.search-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:16px;}
+/* ─── APP WRAPPER FOR CONTENT ─── */
+.app-body {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 /* ─── HERO FEATURE BANNER ─── */
-.hero{position:relative;height:75vh;min-height:500px;max-height:800px;background-size:cover;background-position:center top;display:flex;align-items:flex-end;margin-bottom:20px;}
-.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(to top, var(--bg) 0%, rgba(8,8,8,.4) 40%, rgba(8,8,8,.1) 70%, rgba(8,8,8,.5) 100%);}
-.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(to top, var(--bg), transparent);z-index:2;}
-.hero-inner{position:relative;z-index:3;max-width:800px;width:100%;margin:0 auto;padding:0 40px 60px;margin-left:40px;}
-.hero-tag{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.12);padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:16px;}
-.hero-title{font-size:clamp(32px, 5vw, 64px);font-weight:700;line-height:1.05;letter-spacing:-1px;margin-bottom:14px;text-shadow:0 2px 10px rgba(0,0,0,.5);}
-.hero-meta{display:flex;align-items:center;gap:14px;font-size:13px;color:#ccc;margin-bottom:18px;}
+.hero{position:relative;height:55vh;min-height:420px;max-height:650px;background-size:cover;background-position:center top;display:flex;align-items:flex-end;margin-bottom:10px;}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(to top, var(--bg) 0%, rgba(8,8,8,.3) 50%, rgba(8,8,8,.1) 70%, rgba(8,8,8,.4) 100%);}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(to top, var(--bg), transparent);z-index:2;}
+.hero-inner{position:relative;z-index:3;max-width:1200px;width:100%;padding:0 40px 40px;}
+.hero-tag{display:inline-flex;align-items:center;background:rgba(255,255,255,.1);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.12);padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:14px;}
+.hero-title{font-size:clamp(28px, 4vw, 52px);font-weight:700;line-height:1.1;letter-spacing:-1px;margin-bottom:10px;text-shadow:0 2px 10px rgba(0,0,0,.5);}
+.hero-meta{display:flex;align-items:center;gap:14px;font-size:13px;color:#ccc;margin-bottom:14px;}
 .hero-rating{color:#fbbf24;font-weight:700;display:flex;align-items:center;gap:4px;}
-.hero-overview{font-size:15px;line-height:1.6;color:#bbb;margin-bottom:28px;text-shadow:0 1px 4px rgba(0,0,0,.4);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.hero-overview{font-size:14px;line-height:1.6;color:#bbb;margin-bottom:24px;text-shadow:0 1px 4px rgba(0,0,0,.4);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:700px;}
 .hero-btns{display:flex;align-items:center;gap:12px;}
-.btn-play{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#000;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:700;transition:transform .2s, background .2s;cursor:pointer;}
-.btn-play:hover{transform:scale(1.03);background:#e0e0e0;}
-.btn-play svg{width:14px;height:14px;fill:currentColor;}
-.btn-info{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.05);color:#fff;text-decoration:none;padding:12px 24px;border-radius:6px;font-size:14px;font-weight:600;transition:background .2s;cursor:pointer;}
+.btn-play{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#000;text-decoration:none;padding:11px 24px;border-radius:6px;font-size:13px;font-weight:700;transition:transform .2s, background .2s;cursor:pointer;border:none;}
+.btn-play:hover{transform:scale(1.02);background:#e0e0e0;}
+.btn-play svg{width:14 height:14px;fill:currentColor;}
+.btn-info{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.05);color:#fff;text-decoration:none;padding:11px 22px;border-radius:6px;font-size:13px;font-weight:600;transition:background .2s;cursor:pointer;}
 .btn-info:hover{background:rgba(255,255,255,.2);}
 
 /* ─── GENRE QUICK FILTER BAR ─── */
-.genres-bar{max-width:1400px;margin:0 auto;padding:10px 40px;}
+.genres-bar{padding:10px 40px;}
 .genres-scroll{display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:8px;}
 .genres-scroll::-webkit-scrollbar{display:none;}
-.genre-pill{background:var(--surface);border:1px solid rgba(255,255,255,.06);color:var(--muted);padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;transition:all .2s;}
+.genre-pill{background:var(--surface);border:1px solid rgba(255,255,255,.06);color:var(--muted);padding:7px 16px;border-radius:20px;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;transition:all .2s;}
 .genre-pill:hover{color:#fff;border-color:rgba(255,255,255,.15);background:var(--surface2);}
 .genre-pill.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 12px rgba(229,9,20,.2);}
 
 /* ─── SHELF ROWS & SCROLL BUTTONS ─── */
-.main-content{max-width:1400px;margin:0 auto;padding:0 40px 80px;display:flex;flex-direction:column;gap:40px;}
+.main-content{padding:10px 40px 80px;display:flex;flex-direction:column;gap:36px;}
 .shelf-row{position:relative;}
-.shelf-header{display:flex;align-items:center;justify-content:between;margin-bottom:14px;}
-.shelf-title{font-size:18px;font-weight:600;letter-spacing:0.5px;color:#fff;}
+.shelf-header{display:flex;align-items:center;justify-content:between;margin-bottom:12px;}
+.shelf-title{font-size:17px;font-weight:600;letter-spacing:0.5px;color:#fff;}
 .shelf-seeall{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;margin-left:auto;cursor:pointer;transition:color .2s;}
 .shelf-seeall:hover{color:var(--red);}
 
-.shelf-scroll-wrap{position:relative;group;}
+.shelf-scroll-wrap{position:relative;}
 .shelf-track{display:flex;gap:14px;overflow-x:auto;padding:4px 0 16px;scroll-snap-type:x mandatory;scroll-behavior:smooth;}
 .shelf-track::-webkit-scrollbar{display:none;}
 
@@ -107,9 +149,9 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  background: rgba(10, 10, 10, 0.85);
+  width: 40px;
+  height: 40px;
+  background: rgba(10, 10, 10, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: white;
   border-radius: 50%;
@@ -124,16 +166,16 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 }
 .shelf-scroll-wrap:hover .scroll-btn { opacity: 1; }
 .scroll-btn:hover { background: #fff; color: #000; border-color: #fff; }
-.scroll-btn.left { left: -22px; }
-.scroll-btn.right { right: -22px; }
-.scroll-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+.scroll-btn.left { left: -18px; }
+.scroll-btn.right { right: -18px; }
+.scroll-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.5; }
 
 /* ─── CARDS DESIGN (PORTRAIT) ─── */
-.card-portrait{flex:0 0 calc(100% / 7);min-width:150px;scroll-snap-align:start;position:relative;border-radius:8px;overflow:hidden;background:var(--surface);aspect-ratio:2/3;cursor:pointer;transition:transform .3s cubic-bezier(.165,.84,.44,1), box-shadow .3s;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,.03);}
+.card-portrait{flex:0 0 calc(100% / 6);min-width:145px;scroll-snap-align:start;position:relative;border-radius:8px;overflow:hidden;background:var(--surface);aspect-ratio:2/3;cursor:pointer;transition:transform .3s cubic-bezier(.165,.84,.44,1), box-shadow .3s;border:1px solid rgba(255,255,255,.03);}
 .card-portrait img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
 .card-portrait:hover{transform:translateY(-6px);box-shadow:0 12px 24px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.1);}
 .card-portrait:hover img{transform:scale(1.04);}
-.card-meta{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.4) 70%, transparent 100%);padding:24px 12px 10px;opacity:0;transition:opacity .2s ease;display:flex;flex-direction:column;justify-content:end;}
+.card-meta{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.4) 70%, transparent 100%);padding:24px 12px 10px;opacity:0;transition:opacity .2s ease;display:flex;flex-direction:column;justify-content:end;}
 .card-portrait:hover .card-meta{opacity:1;}
 .card-title{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
 .card-sub{font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;}
@@ -142,12 +184,12 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 /* ─── TOP 10 RANK LAYOUT ENGINE ─── */
 .card-rank-wrapper {
   position: relative;
-  flex: 0 0 calc(100% / 5.5);
-  min-width: 190px;
+  flex: 0 0 calc(100% / 5);
+  min-width: 180px;
   scroll-snap-align: start;
   display: flex;
   align-items: flex-end;
-  padding-left: 45px;
+  padding-left: 40px;
 }
 .card-rank-wrapper .card-portrait {
   flex: 1;
@@ -156,12 +198,12 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 .rank-number {
   position: absolute;
   left: -15px;
-  bottom: -25px;
-  font-size: 150px;
+  bottom: -22px;
+  font-size: 130px;
   font-weight: 900;
   line-height: 1;
   color: #080808;
-  -webkit-text-stroke: 4px rgba(255,255,255,0.75);
+  -webkit-text-stroke: 4px rgba(255,255,255,0.7);
   text-shadow: 0 0 30px rgba(0,0,0,0.8);
   user-select: none;
   z-index: 5;
@@ -173,19 +215,19 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
 }
 
 /* ─── CARDS DESIGN (LANDSCAPE / CONTINUE WATCHING) ─── */
-.card-landscape{flex:0 0 calc(100% / 4);min-width:240px;scroll-snap-align:start;position:relative;border-radius:8px;overflow:hidden;background:var(--surface);aspect-ratio:16/9;cursor:pointer;transition:transform .3s cubic-bezier(.165,.84,.44,1), box-shadow .3s;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,.03);}
+.card-landscape{flex:0 0 calc(100% / 3.5);min-width:230px;scroll-snap-align:start;position:relative;border-radius:8px;overflow:hidden;background:var(--surface);aspect-ratio:16/9;cursor:pointer;transition:transform .3s cubic-bezier(.165,.84,.44,1), box-shadow .3s;border:1px solid rgba(255,255,255,.03);}
 .card-landscape img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
 .card-landscape:hover{transform:translateY(-6px);box-shadow:0 12px 24px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.1);}
 .card-landscape:hover img{transform:scale(1.04);}
-.card-landscape .card-meta{opacity:1;background:linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.2) 60%, transparent 100%);padding:30px 14px 12px;position:absolute;bottom:0;left:0;right:0;}
-.card-landscape .card-title{font-size:14px;margin-bottom:3px;color:#fff;}
+.card-landscape .card-meta{opacity:1;background:linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.2) 60%, transparent 100%);padding:30px 14px 12px;position:absolute;bottom:0;left:0;right:0;}
+.card-landscape .card-title{font-size:13px;margin-bottom:3px;color:#fff;}
 
-/* ─── STUDIOS & PLATFORMS CONTAINER ─── */
+/* ─── STUDIOS LAYER ─── */
 .studios-track { display: flex; gap: 14px; overflow-x: auto; padding: 8px 0; scroll-snap-type: x mandatory; scroll-behavior: smooth; }
 .studios-track::-webkit-scrollbar { display: none; }
 .studio-card {
-  flex: 0 0 calc(100% / 6.5);
-  min-width: 165px;
+  flex: 0 0 calc(100% / 5.5);
+  min-width: 150px;
   aspect-ratio: 16/9;
   background: var(--surface2);
   border: 1px solid rgba(255,255,255,0.06);
@@ -194,9 +236,7 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  text-decoration: none;
   scroll-snap-align: start;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   transition: all 0.3s cubic-bezier(.165,.84,.44,1);
   padding: 12px;
 }
@@ -204,92 +244,54 @@ body{background:var(--bg);color:var(--text);font-family:'Josefin Sans',sans-seri
   transform: translateY(-4px);
   border-color: rgba(255,255,255,0.18);
   background: var(--surface3);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.7);
 }
-.studio-logo {
-  font-family: 'Cabinet Grotesk', 'Arial Black', sans-serif;
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  text-align: center;
-  user-select: none;
-}
-.studio-card.netflix .studio-logo { color: #E50914; font-family: 'Arial Black', sans-serif; letter-spacing: -1px; }
-.studio-card.prime .studio-logo { color: #00A8E1; font-style: italic; font-weight: 800; font-size: 17px; }
-.studio-card.apple .studio-logo { color: #FFFFFF; font-weight: 500; font-size: 18px; }
-.studio-card.crunchy .studio-logo { color: #F47521; font-weight: 700; font-size: 16px; }
-.studio-card.disney .studio-logo { color: #113CCF; font-family: 'Georgia', serif; font-style: italic; font-weight: 700; }
-.studio-card.hulu .studio-logo { color: #1CE783; font-family: 'Arial', sans-serif; font-weight: 700; letter-spacing: -1px; }
-.studio-card.hbo .studio-logo { color: #FFFFFF; font-family: 'Impact', sans-serif; letter-spacing: 1px; }
-.studio-card.mgm .studio-logo { color: #DAA520; font-weight: 800; font-size: 18px; }
-.studio-card.paramount .studio-logo { color: #0064FF; font-family: 'Georgia', serif; font-style: italic; font-size: 15px; }
-.studio-card.peacock .studio-logo { color: #FFFFFF; font-weight: 700; font-size: 17px; }
-.studio-card.shudder .studio-logo { color: #FF0000; font-family: 'Impact', sans-serif; letter-spacing: 2px; font-size: 21px; }
-.studio-card.discovery .studio-logo { color: #005A9C; font-weight: 800; font-size: 15px; }
+.studio-logo { font-family: 'Cabinet Grotesk', sans-serif; font-size: 18px; font-weight: 900; letter-spacing: -0.5px; text-align: center; }
+.studio-card.netflix .studio-logo { color: #E50914; }
+.studio-card.prime .studio-logo { color: #00A8E1; font-style: italic; }
+.studio-card.apple .studio-logo { color: #FFFFFF; font-weight: 500; }
+.studio-card.crunchy .studio-logo { color: #F47521; }
+
+/* ─── PREVIEW DETAILED POPUP MODAL ─── */
+.preview-modal { position: fixed; inset: 0; background: rgba(5,5,5,0.92); backdrop-filter: blur(12px); z-index: 30000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
+.preview-modal.open { display: flex; opacity: 1; }
+.preview-box { width: 100%; max-width: 680px; background: #111; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+.preview-banner { width: 100%; height: 280px; background-size: cover; background-position: center; position: relative; }
+.preview-banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #111 0%, transparent 100%); }
+.preview-close { position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.5); border: none; width: 34px; height: 34px; border-radius: 50%; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s; }
+.preview-close:hover { background: rgba(255,255,255,0.2); }
+.preview-body { padding: 28px; }
+.preview-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+.preview-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.preview-desc { font-size: 14px; line-height: 1.6; color: #ccc; margin-bottom: 24px; }
+.preview-actions { display: flex; align-items: center; gap: 12px; }
 
 /* TRAILER EMBED MODAL */
-.trailer-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.trailer-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 40000; display: none; align-items: center; justify-content: center; padding: 20px; }
 .trailer-modal.open { display: flex; }
 .trailer-wrap { width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; position: relative; border-radius: 8px; overflow: hidden; }
 .trailer-wrap iframe { width: 100%; height: 100%; border: none; }
 .trailer-close { position: absolute; top: -40px; right: 0; background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; }
 
-/* ─── SKELETON PLACEHOLDERS ─── */
+/* SEARCH PANEL */
+.search-modal{position:fixed;inset:0;background:rgba(8,8,8,.98);backdrop-filter:blur(16px);z-index:10000;display:none;opacity:0;transition:opacity .3s ease;}
+.search-modal.open{display:block;opacity:1;}
+.search-top{max-width:800px;margin:80px auto 0;padding:0 24px;display:flex;align-items:center;gap:16px;}
+.search-input{width:100%;background:var(--surface);border:1px solid rgba(255,255,255,.08);border-radius:30px;padding:16px 24px;color:#fff;font-family:inherit;font-size:18px;outline:none;}
+.search-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;font-weight:600;text-transform:uppercase;}
+.search-results-box{max-width:1000px;margin:40px auto 0;padding:0 24px 80px;height:calc(100vh - 240px);overflow-y:auto;}
+.search-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:16px;}
+
 .skel-card{background:linear-gradient(90deg, #121212 25%, #1c1c1c 50%, #121212 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ─── MODALS & PANELS ─── */
-.side-panel{position:fixed;top:0;right:0;bottom:0;width:340px;background:var(--surface);border-left:1px solid rgba(255,255,255,.06);z-index:10001;transform:translateX(100%);transition:transform .3s cubic-bezier(.165,.84,.44,1);padding:40px 24px;display:flex;flex-direction:column;}
-.side-panel.open{transform:translateX(0);}
-.side-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:10000;display:none;}
-.side-panel-overlay.open{display:block;}
-.panel-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;}
-.panel-close:hover{color:#fff;}
-.panel-close svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;}
+footer{border-top:1px solid rgba(255,255,255,.05);padding:40px;background:#060606;text-align:center;}
+footer p{font-size:12px;color:var(--muted);line-height:1.6;}
 
-.user-badge{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:24px;}
-.user-avatar{width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;}
-.user-email{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;}
-.user-status{font-size:11px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
-
-.panel-menu{display:flex;flex-direction:column;gap:6px;}
-.panel-btn{display:flex;align-items:center;gap:12px;background:none;border:none;color:var(--text);padding:12px 14px;border-radius:6px;font-family:inherit;font-size:14px;font-weight:500;text-align:left;cursor:pointer;text-decoration:none;transition:background .2s;}
-.panel-btn:hover{background:var(--surface2);}
-.panel-btn svg{width:18px;height:18px;fill:none;stroke:var(--muted);stroke-width:2;}
-.panel-btn:hover svg{stroke:#fff;}
-.panel-btn.danger{color:var(--red);}
-.panel-btn.danger svg{stroke:var(--red);}
-.panel-btn.danger:hover{background:rgba(229,9,20,.06);}
-
-footer{border-top:1px solid rgba(255,255,255,.05);padding:40px;background:#060606;text-align:center;margin-top:40px;}
-footer p{font-size:12px;color:var(--muted);line-height:1.6;max-width:600px;margin:0 auto 12px;}
-footer a{font-size:12px;color:var(--text);text-decoration:none;opacity:.4;transition:opacity .2s;}
-footer a:hover{opacity:1;color:var(--red);}
-
-@media (max-width:1200px){
-  .card-portrait{flex:0 0 calc(100% / 5);}
-  .card-landscape{flex:0 0 calc(100% / 3);}
-  .card-rank-wrapper{flex:0 0 calc(100% / 4.2);}
-  .studio-card{flex:0 0 calc(100% / 4.5);}
-}
-@media (max-width:800px){
-  .nav-inner{padding:0 20px;}
-  .nav-center{display:none;}
-  .hero{height:60vh;padding-bottom:40px;}
-  .hero-inner{padding:0 20px 20px;margin-left:20px;}
-  .genres-bar{padding:10px 20px;}
-  .main-content{padding:0 20px 60px;gap:28px;}
-  .card-portrait{flex:0 0 calc(100% / 3.5);min-width:120px;}
-  .card-landscape{flex:0 0 calc(100% / 2);min-width:180px;}
-  .card-rank-wrapper{flex:0 0 calc(100% / 2.5);min-width:150px;}
-  .studio-card{flex:0 0 calc(100% / 3.2);min-width:130px;}
-}
-@media (max-width:480px){
-  .card-portrait{flex:0 0 calc(100% / 2.3);min-width:100px;}
-  .card-landscape{flex:0 0 calc(100% / 1.3);min-width:160px;}
-  .card-rank-wrapper{flex:0 0 calc(100% / 1.6);min-width:130px;padding-left:35px;}
-  .rank-number{font-size:100px;bottom:-15px;left:-10px;}
-  .studio-card{flex:0 0 calc(100% / 2.2);min-width:110px;}
+@media (max-width:1024px){
+  :root { --sidebar-w: 70px; }
+  .sidebar-logo span, .sidebar-item span, .sidebar-label { display: none; }
+  .sidebar { padding: 20px 8px; align-items: center; }
+  .sidebar-logo { padding-left: 0; margin-bottom: 24px; }
 }
 </style>
 </head>
@@ -297,234 +299,174 @@ footer a:hover{opacity:1;color:var(--red);}
 
 <div class="toast-container" id="toast-container"></div>
 
-<!-- NAVIGATION -->
-<nav class="nav-wrap" id="navbar">
-  <div class="nav-inner">
-    <a href="index.html" class="logo-box">
-      <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="22" cy="22" r="14" stroke="#e50914" stroke-width="2"/>
-        <circle cx="22" cy="22" r="5" fill="#e50914"/>
-        <circle cx="22" cy="10" r="2.5" fill="#e50914"/>
-        <circle cx="22" cy="34" r="2.5" fill="#e50914"/>
-        <circle cx="10" cy="22" r="2.5" fill="#e50914"/>
-        <circle cx="34" cy="22" r="2.5" fill="#e50914"/>
-      </svg>
-    </a>
+<!-- DESIGN ACCURATE LEFT SIDEBAR -->
+<aside class="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <svg width="32" height="32" viewBox="0 0 44 44" fill="none">
+      <circle cx="22" cy="22" r="14" stroke="#e50914" stroke-width="2.5"/>
+      <circle cx="22" cy="22" r="5" fill="#e50914"/>
+    </svg>
+    <span>Cinema Nest</span>
+  </a>
 
-    <div class="nav-center">
-      <span class="nav-link active" onclick="switchMainType('all', this)">Home</span>
-      <span class="nav-link" onclick="switchMainType('movie', this)">Movies</span>
-      <span class="nav-link" onclick="switchMainType('tv', this)">TV Series</span>
+  <div class="sidebar-menu">
+    <div class="sidebar-item active" onclick="switchMainType('all', this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="sidebar-item" onclick="toggleSearch(true)">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>Search</span>
+    </div>
+    <div class="sidebar-item" onclick="switchMainType('movie', this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+      <span>Movies</span>
+    </div>
+    <div class="sidebar-item" onclick="switchMainType('tv', this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><line x1="17" y1="2" x2="12" y2="7"/><line x1="7" y1="2" x2="12" y2="7"/></svg>
+      <span>TV Shows</span>
+    </div>
+    <div class="sidebar-item" onclick="switchMainType('anime', this)">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/></svg>
+      <span>Anime</span>
     </div>
 
-    <div class="nav-right">
-      <button class="search-trigger" onclick="toggleSearch(true)">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-      <div class="profile-trigger" onclick="toggleProfilePanel(true)">
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <div class="sidebar-label">Discover</div>
+    <div class="sidebar-item" onclick="window.showToast('Live Events feature arriving soon!')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Sports</span>
+    </div>
+    <div class="sidebar-item" onclick="window.showToast('Account Space Dashboard')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>My Space</span>
+    </div>
+
+    <div class="sidebar-label">Community</div>
+    <a href="#" class="sidebar-item" target="_blank">
+      <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      <span>Android app</span>
+    </a>
+    <a href="#" class="sidebar-item" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M21.19 2.5a18.81 18.81 0 0 0-3.38 1A19.51 19.51 0 0 0 13 5.43a21.49 21.49 0 0 0-6 4.79 24.64 24.64 0 0 0-4.43 6.78.43.43 0 0 0 .39.61H6.1a.41.41 0 0 0 .36-.24 16 16 0 0 1 3.44-4.8 19 19 0 0 1 4.56-3.1 20 20 0 0 1 5-.13.42.42 0 0 0 .42-.49 16.32 16.32 0 0 0-.6-3 14.53 14.53 0 0 0-1.69-3.21.43.43 0 0 0-.4-.14z"/></svg>
+      <span>Telegram</span>
+    </a>
+    <a href="#" class="sidebar-item" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span>Discord</span>
+    </a>
+  </div>
+</aside>
+
+<div class="app-body">
+  <!-- HERO BILLBOARD -->
+  <header class="hero" id="hero-banner">
+    <div class="hero-inner" id="hero-content">
+      <div class="hero-tag">Featured Spotlight</div>
+      <h1 class="hero-title">Loading Features</h1>
+      <div class="hero-meta">
+        <span class="hero-rating">★ 0.0</span>
+        <span id="hero-year">0000</span>
+      </div>
+      <p class="hero-overview"></p>
+      <div class="hero-btns"></div>
+    </div>
+  </header>
+
+  <!-- GENRES BAR -->
+  <div class="genres-bar">
+    <div class="genres-scroll" id="genres-pills-container">
+      <span class="genre-pill active" onclick="filterGenre('all', this)">All Categories</span>
+      <span class="genre-pill" onclick="filterGenre('28', this)">Action</span>
+      <span class="genre-pill" onclick="filterGenre('35', this)">Comedy</span>
+      <span class="genre-pill" onclick="filterGenre('18', this)">Drama</span>
+      <span class="genre-pill" onclick="filterGenre('27', this)">Horror</span>
+      <span class="genre-pill" onclick="filterGenre('878', this)">Sci-Fi</span>
+    </div>
+  </div>
+
+  <!-- CONTAINER SHELVES -->
+  <main class="main-content" id="shelves-container">
+    
+    <!-- Continue Watching -->
+    <div class="shelf-row" id="shelf-continue" style="display:none;">
+      <div class="shelf-header"><h2 class="shelf-title">Continue Watching</h2></div>
+      <div class="shelf-scroll-wrap">
+        <button class="scroll-btn left" onclick="scrollShelf('continue-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="shelf-track" id="continue-list"></div>
+        <button class="scroll-btn right" onclick="scrollShelf('continue-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
     </div>
-  </div>
-</nav>
 
-<!-- HERO BILLBOARD -->
-<header class="hero" id="hero-banner">
-  <div class="hero-inner" id="hero-content">
-    <div class="hero-tag">Featured Spotlight</div>
-    <h1 class="hero-title">Loading Features</h1>
-    <div class="hero-meta">
-      <span class="hero-rating">★ 0.0</span>
-      <span id="hero-year">0000</span>
+    <!-- Trending Right Now -->
+    <div class="shelf-row" id="row-trending">
+      <div class="shelf-header"><h2 class="shelf-title">Trending Right Now</h2></div>
+      <div class="shelf-scroll-wrap">
+        <button class="scroll-btn left" onclick="scrollShelf('trending-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="shelf-track" id="trending-list"></div>
+        <button class="scroll-btn right" onclick="scrollShelf('trending-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
     </div>
-    <p class="hero-overview"></p>
-    <div class="hero-btns"></div>
-  </div>
-</header>
 
-<!-- GENRES -->
-<div class="genres-bar">
-  <div class="genres-scroll" id="genres-pills-container">
-    <span class="genre-pill active" onclick="filterGenre('all', this)">All Categories</span>
-    <span class="genre-pill" onclick="filterGenre('28', this)">Action</span>
-    <span class="genre-pill" onclick="filterGenre('35', this)">Comedy</span>
-    <span class="genre-pill" onclick="filterGenre('18', this)">Drama</span>
-    <span class="genre-pill" onclick="filterGenre('27', this)">Horror</span>
-    <span class="genre-pill" onclick="filterGenre('878', this)">Sci-Fi</span>
-    <span class="genre-pill" onclick="filterGenre('53', this)">Thriller</span>
-    <span class="genre-pill" onclick="filterGenre('10749', this)">Romance</span>
+    <!-- Studios & Platforms -->
+    <div class="shelf-row" id="row-studios">
+      <div class="shelf-header"><h2 class="shelf-title">Studios & Platforms</h2></div>
+      <div class="shelf-scroll-wrap">
+        <button class="scroll-btn left" onclick="scrollShelf('studios-track-id', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="studios-track" id="studios-track-id">
+          <div class="studio-card netflix"><div class="studio-logo">NETFLIX</div></div>
+          <div class="studio-card prime"><div class="studio-logo">prime video</div></div>
+          <div class="studio-card apple"><div class="studio-logo">tv+</div></div>
+          <div class="studio-card crunchy"><div class="studio-logo">crunchyroll</div></div>
+        </div>
+        <button class="scroll-btn right" onclick="scrollShelf('studios-track-id', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Popular TV Shows -->
+    <div class="shelf-row" id="row-tv">
+      <div class="shelf-header"><h2 class="shelf-title">Popular TV Shows</h2></div>
+      <div class="shelf-scroll-wrap">
+        <button class="scroll-btn left" onclick="scrollShelf('tv-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="shelf-track" id="tv-list"></div>
+        <button class="scroll-btn right" onclick="scrollShelf('tv-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Action -->
+    <div class="shelf-row" id="row-action">
+      <div class="shelf-header"><h2 class="shelf-title">Action Blockbusters</h2></div>
+      <div class="shelf-scroll-wrap">
+        <button class="scroll-btn left" onclick="scrollShelf('action-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="shelf-track" id="action-list"></div>
+        <button class="scroll-btn right" onclick="scrollShelf('action-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>This site does not host files on its server. Content layers link exclusively via connection channels to foreign streaming providers.</p>
+  </footer>
+</div>
+
+<!-- NEW INTERACTIVE PREVIEW POPUP MODAL -->
+<div class="preview-modal" id="preview-modal" onclick="closePreviewModal()">
+  <div class="preview-box" onclick="event.stopPropagation()">
+    <button class="preview-close" onclick="closePreviewModal()">✕</button>
+    <div class="preview-banner" id="modal-banner"></div>
+    <div class="preview-body">
+      <h2 class="preview-title" id="modal-title">Title Here</h2>
+      <div class="preview-meta">
+        <span id="modal-rating" style="color:#fbbf24; font-weight:700;">★ 0.0</span>
+        <span id="modal-year">0000</span>
+        <span id="modal-type" style="text-transform:uppercase;">Movie</span>
+      </div>
+      <p class="preview-desc" id="modal-overview">Summary description goes here...</p>
+      <div class="preview-actions" id="modal-actions-bar"></div>
+    </div>
   </div>
 </div>
 
-<!-- CONTAINER SHELVES -->
-<main class="main-content" id="shelves-container">
-  
-  <!-- 1. Continue Watching -->
-  <div class="shelf-row" id="shelf-continue" style="display:none;">
-    <div class="shelf-header"><h2 class="shelf-title">Continue Watching</h2></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('continue-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="continue-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('continue-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 2. Trending Right Now -->
-  <div class="shelf-row" id="row-trending">
-    <div class="shelf-header"><h2 class="shelf-title">Trending Right Now</h2></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('trending-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="trending-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('trending-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 3. Studios & Platforms -->
-  <div class="shelf-row" id="row-studios">
-    <div class="shelf-header"><h2 class="shelf-title">Studios & Platforms</h2></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('studios-track-id', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="studios-track" id="studios-track-id">
-        <div class="studio-card netflix" onclick="seeAll('all','Netflix','movie')"><div class="studio-logo">NETFLIX</div></div>
-        <div class="studio-card prime" onclick="seeAll('all','Prime Video','movie')"><div class="studio-logo">prime video</div></div>
-        <div class="studio-card apple" onclick="seeAll('all','Apple TV+','movie')"><div class="studio-logo">tv+</div></div>
-        <div class="studio-card crunchy" onclick="seeAll('all','Crunchyroll','tv')"><div class="studio-logo">crunchyroll</div></div>
-        <div class="studio-card disney" onclick="seeAll('all','Disney+','movie')"><div class="studio-logo">Disney+</div></div>
-        <div class="studio-card hulu" onclick="seeAll('all','Hulu','movie')"><div class="studio-logo">hulu</div></div>
-        <div class="studio-card hbo" onclick="seeAll('all','HBO','movie')"><div class="studio-logo">HBO</div></div>
-        <div class="studio-card mgm" onclick="seeAll('all','MGM+','movie')"><div class="studio-logo">MGM+</div></div>
-        <div class="studio-card paramount" onclick="seeAll('all','Paramount+','movie')"><div class="studio-logo">Paramount+</div></div>
-        <div class="studio-card peacock" onclick="seeAll('all','Peacock','movie')"><div class="studio-logo">peacock</div></div>
-        <div class="studio-card shudder" onclick="seeAll('all','Shudder','movie')"><div class="studio-logo">SHUDDER</div></div>
-        <div class="studio-card discovery" onclick="seeAll('all','Discovery+','movie')"><div class="studio-logo">discovery+</div></div>
-      </div>
-      <button class="scroll-btn right" onclick="scrollShelf('studios-track-id', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 4. Popular TV Shows -->
-  <div class="shelf-row" id="row-tv">
-    <div class="shelf-header"><h2 class="shelf-title">Popular TV Shows</h2><a class="shelf-seeall" onclick="seeAll('popular','Popular TV Shows','tv')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('tv-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="tv-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('tv-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 5. Action -->
-  <div class="shelf-row" id="row-action">
-    <div class="shelf-header"><h2 class="shelf-title">Action Blockbusters</h2><a class="shelf-seeall" onclick="seeAll('28','Action Blockbusters','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('action-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="action-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('action-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 6. Comedy -->
-  <div class="shelf-row" id="row-comedy">
-    <div class="shelf-header"><h2 class="shelf-title">Comedy Hits</h2><a class="shelf-seeall" onclick="seeAll('35','Comedy Hits','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('comedy-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="comedy-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('comedy-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 7. Drama -->
-  <div class="shelf-row" id="row-drama">
-    <div class="shelf-header"><h2 class="shelf-title">Drama Masterpieces</h2><a class="shelf-seeall" onclick="seeAll('18','Drama Masterpieces','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('drama-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="drama-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('drama-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 8. Horror -->
-  <div class="shelf-row" id="row-horror">
-    <div class="shelf-header"><h2 class="shelf-title">Horror & Chillers</h2><a class="shelf-seeall" onclick="seeAll('27','Horror & Chillers','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('horror-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="horror-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('horror-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 9. Sci-Fi -->
-  <div class="shelf-row" id="row-scifi">
-    <div class="shelf-header"><h2 class="shelf-title">Sci-Fi & Fantasy</h2><a class="shelf-seeall" onclick="seeAll('878','Sci-Fi & Fantasy','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('scifi-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="scifi-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('scifi-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 10. Thriller -->
-  <div class="shelf-row" id="row-thriller">
-    <div class="shelf-header"><h2 class="shelf-title">Edge-of-Your-Seat Thrillers</h2><a class="shelf-seeall" onclick="seeAll('53','Edge-of-Your-Seat Thrillers','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('thriller-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="thriller-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('thriller-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 11. Romance -->
-  <div class="shelf-row" id="row-romance">
-    <div class="shelf-header"><h2 class="shelf-title">Romantic Tales</h2><a class="shelf-seeall" onclick="seeAll('10749','Romantic Tales','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('romance-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="romance-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('romance-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 12. Animation -->
-  <div class="shelf-row" id="row-animation">
-    <div class="shelf-header"><h2 class="shelf-title">Animation Favorites</h2><a class="shelf-seeall" onclick="seeAll('16','Animation Favorites','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('animation-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="animation-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('animation-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 13. Crime -->
-  <div class="shelf-row" id="row-crime">
-    <div class="shelf-header"><h2 class="shelf-title">Crime & Mystery</h2><a class="shelf-seeall" onclick="seeAll('80','Crime & Mystery','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('crime-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="crime-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('crime-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 14. Documentary -->
-  <div class="shelf-row" id="row-documentary">
-    <div class="shelf-header"><h2 class="shelf-title">Documentaries</h2><a class="shelf-seeall" onclick="seeAll('99','Documentaries','movie')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('documentary-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="documentary-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('documentary-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-  <!-- 15. Trending Anime -->
-  <div class="shelf-row" id="row-anime">
-    <div class="shelf-header"><h2 class="shelf-title">Trending Anime</h2><a class="shelf-seeall" onclick="seeAll('16','Trending Anime','tv')">See All</a></div>
-    <div class="shelf-scroll-wrap">
-      <button class="scroll-btn left" onclick="scrollShelf('anime-list', -600)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="shelf-track" id="anime-list"></div>
-      <button class="scroll-btn right" onclick="scrollShelf('anime-list', 600)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
-    </div>
-  </div>
-
-</main>
-
-<!-- TRAILER LIGHTBOX SCREEN -->
+<!-- TRAILER LIGHTBOX -->
 <div class="trailer-modal" id="trailer-screen" onclick="closeTrailer()">
   <div class="trailer-wrap" onclick="event.stopPropagation()">
     <button class="trailer-close" onclick="closeTrailer()">✕ Close</button>
@@ -532,33 +474,10 @@ footer a:hover{opacity:1;color:var(--red);}
   </div>
 </div>
 
-<!-- PROFILE PANEL -->
-<div class="side-panel-overlay" id="panel-overlay" onclick="toggleProfilePanel(false)"></div>
-<div class="side-panel" id="profile-panel">
-  <button class="panel-close" onclick="toggleProfilePanel(false)">
-    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
-  <div class="user-badge">
-    <div class="user-avatar" id="avatar-letters">G</div>
-    <div style="flex:1; min-width:0;">
-      <div class="user-email" id="panel-email">Guest User</div>
-      <div class="user-status" id="panel-status">Free Mode</div>
-    </div>
-  </div>
-  <div class="panel-menu">
-    <a href="pricing.html" class="panel-btn" id="panel-premium-btn">Upgrade to Premium</a>
-    <button class="panel-btn danger" id="panel-logout-btn" onclick="handleAuthAction()">
-      <span id="logout-label">Sign In</span>
-    </button>
-  </div>
-</div>
-
-<!-- SEARCH MODAL -->
+<!-- SEARCH OVERLAY -->
 <div class="search-modal" id="search-modal">
   <div class="search-top">
-    <div class="search-input-wrap">
-      <input type="text" class="search-input" id="search-field" placeholder="Search files, genres, titles..." autocomplete="off">
-    </div>
+    <input type="text" class="search-input" id="search-field" placeholder="Search titles..." autocomplete="off">
     <button class="search-close" onclick="toggleSearch(false)">Cancel</button>
   </div>
   <div class="search-results-box">
@@ -566,15 +485,10 @@ footer a:hover{opacity:1;color:var(--red);}
   </div>
 </div>
 
-<footer>
-  <p>This site does not host files on its server. Content layers link exclusively via connection channels to foreign streaming providers.</p>
-  <a href="mailto:cinemanest@proton.me">cinemanest@proton.me</a>
-</footer>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyARv0yl2troYUULCo-7avpF4yg5nZ-xoEE",
@@ -589,19 +503,42 @@ footer a:hover{opacity:1;color:var(--red);}
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  setPersistence(auth, browserLocalPersistence).catch(()=>{});
-
   const API_KEY = '1d3ae144acfb6bfcb25f70361cedcf29';
   const API = 'https://api.themoviedb.org/3';
   const IMG = 'https://image.tmdb.org/t/p/w500';
   const IMG_ORIG = 'https://image.tmdb.org/t/p/original';
 
-  let currentMainType = 'all'; 
+  let currentMainType = 'all';
   let currentGenreFilter = 'all';
 
   window.scrollShelf = (trackId, amt) => {
     const el = document.getElementById(trackId);
     if(el) el.scrollLeft += amt;
+  };
+
+  // OPEN DETAILS PREVIEW MODAL (Fixes Direct Movie Redirect)
+  window.openPreviewModal = (id, type, title, overview, rating, year, backdrop, poster) => {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-overview').textContent = overview || "No details available.";
+    document.getElementById('modal-rating').textContent = `★ ${rating}`;
+    document.getElementById('modal-year').textContent = year;
+    document.getElementById('modal-type').textContent = type === 'tv' ? 'TV Series' : 'Movie';
+    
+    const bannerUrl = backdrop ? IMG_ORIG + backdrop : (poster ? IMG + poster : 'https://placehold.co/600x340/111/222?text=No+Cover');
+    document.getElementById('modal-banner').style.backgroundImage = `url('${bannerUrl}')`;
+
+    document.getElementById('modal-actions-bar').innerHTML = `
+      <a class="btn-play" href="watch.html?id=${id}&type=${type}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play Now
+      </a>
+      <button class="btn-info" onclick="launchTrailer(${id}, '${type}')">Watch Trailer</button>
+    `;
+    
+    document.getElementById('preview-modal').classList.add('open');
+  };
+
+  window.closePreviewModal = () => {
+    document.getElementById('preview-modal').classList.remove('open');
   };
 
   window.launchTrailer = async (id, type) => {
@@ -626,34 +563,8 @@ footer a:hover{opacity:1;color:var(--red);}
     document.getElementById('trailer-frame').src = "";
   };
 
-  function showShimmerSkeletons(targetId, count) {
-    const el = document.getElementById(targetId);
-    if(!el) return;
-    let code = '';
-    for(let i=0; i<count; i++) code += `<div class="skel-card card-portrait"></div>`;
-    el.innerHTML = code;
-  }
-
-  function initAllSkeletons() {
-    const lists = ['trending-list','tv-list','action-list','comedy-list','drama-list','horror-list','scifi-list','thriller-list','romance-list','animation-list','crime-list','documentary-list','anime-list'];
-    lists.forEach(id => showShimmerSkeletons(id, 7));
-  }
-  initAllSkeletons();
-
-  window.addEventListener('scroll', () => {
-    const nav = document.getElementById('navbar');
-    if(window.scrollY > 40) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
-  });
-
-  window.toggleProfilePanel = (open) => {
-    document.getElementById('profile-panel').classList.toggle('open', open);
-    document.getElementById('panel-overlay').classList.toggle('open', open);
-  };
-
   window.toggleSearch = (open) => {
-    const m = document.getElementById('search-modal');
-    m.classList.toggle('open', open);
+    document.getElementById('search-modal').classList.toggle('open', open);
     if(open) document.getElementById('search-field').focus();
   };
 
@@ -666,25 +577,9 @@ footer a:hover{opacity:1;color:var(--red);}
     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3000);
   };
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      document.getElementById('panel-email').textContent = user.email;
-      document.getElementById('logout-label').textContent = 'Sign Out';
-      loadCloudHistory(user);
-    } else {
-      loadLocalHistory();
-    }
+  onAuthStateChanged(auth, (user) => {
+    if (user) { loadCloudHistory(user); } else { loadLocalHistory(); }
   });
-
-  window.handleAuthAction = async () => {
-    if(auth.currentUser) {
-      await signOut(auth);
-      window.showToast('Logged out.');
-      toggleProfilePanel(false);
-    } else {
-      window.location.href = 'signup.html';
-    }
-  };
 
   async function fetchRow(url, containerId, type = 'movie') {
     try {
@@ -700,14 +595,18 @@ footer a:hover{opacity:1;color:var(--red);}
         const year = (item.release_date || item.first_air_date || '').slice(0,4);
         const rating = item.vote_average ? item.vote_average.toFixed(1) : '0.0';
         
+        // Escape characters for injection protection
+        const cleanTitle = title.replace(/'/g, "\\'");
+        const cleanOverview = (item.overview || "").replace(/'/g, "\\'").replace(/"/g, '\\"');
+
         return `
-          <a class="card-portrait" href="watch.html?id=${item.id}&type=${type}">
+          <div class="card-portrait" onclick="openPreviewModal(${item.id}, '${type}', '${cleanTitle}', '${cleanOverview}', '${rating}', '${year}', '${item.backdrop_path || ''}', '${item.poster_path || ''}')">
             <img src="${img}" alt="${title}" loading="lazy">
             <div class="card-meta">
               <div class="card-title">${title}</div>
               <div class="card-sub"><span>${year}</span><span class="card-rating">★ ${rating}</span></div>
             </div>
-          </a>`;
+          </div>`;
       }).join('');
     } catch {}
   }
@@ -724,15 +623,20 @@ footer a:hover{opacity:1;color:var(--red);}
           const type = item.media_type === 'tv' ? 'tv' : 'movie';
           const title = item.title || item.name || '';
           const img = item.poster_path ? IMG + item.poster_path : '';
+          const cleanTitle = title.replace(/'/g, "\\'");
+          const cleanOverview = (item.overview || "").replace(/'/g, "\\'").replace(/"/g, '\\"');
+          const rating = item.vote_average ? item.vote_average.toFixed(1) : '0.0';
+          const year = (item.release_date || item.first_air_date || '').slice(0,4);
+
           return `
             <div class="card-rank-wrapper">
               <div class="rank-number">${idx + 1}</div>
-              <a class="card-portrait" href="watch.html?id=${item.id}&type=${type}">
+              <div class="card-portrait" onclick="openPreviewModal(${item.id}, '${type}', '${cleanTitle}', '${cleanOverview}', '${rating}', '${year}', '${item.backdrop_path || ''}', '${item.poster_path || ''}')">
                 <img src="${img}" alt="${title}" loading="lazy">
                 <div class="card-meta">
                   <div class="card-title">${title}</div>
                 </div>
-              </a>
+              </div>
             </div>`;
         }).join('');
       }
@@ -757,15 +661,21 @@ footer a:hover{opacity:1;color:var(--red);}
     } catch {}
   }
 
+  // FIXED CONTINUE WATCHING BANNER ENGINE (Handles snake_case and camelCase parameters gracefully)
   function renderHistoryShelf(items) {
     const row = document.getElementById('shelf-continue');
     const track = document.getElementById('continue-list');
     if(!items || !items.length) { row.style.display = 'none'; return; }
     row.style.display = 'block';
+    
     track.innerHTML = items.map(item => {
-      const bannerImg = item.backdrop_path ? IMG + item.backdrop_path : (item.poster_path ? IMG + item.poster_path : 'https://placehold.co/600x340/111/222?text=No+Cover');
+      const bgPath = item.backdrop_path || item.backdropPath || item.poster_path || item.posterPath;
+      const bannerImg = bgPath ? (bgPath.startsWith('http') ? bgPath : IMG + bgPath) : 'https://placehold.co/600x340/111/222?text=Cinema+Nest';
+      const type = item.mediaType || item.media_type || 'movie';
+      const mId = item.mediaId || item.id;
+
       return `
-      <a class="card-landscape" href="watch.html?id=${item.mediaId}&type=${item.mediaType}">
+      <a class="card-landscape" href="watch.html?id=${mId}&type=${type}">
         <img src="${bannerImg}" alt="" loading="lazy">
         <div class="card-meta"><div class="card-title">${item.title || 'Untitled Stream'}</div></div>
       </a>`;
@@ -777,8 +687,8 @@ footer a:hover{opacity:1;color:var(--red);}
 
   window.switchMainType = (type, btn) => {
     currentMainType = type;
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.sidebar-item').forEach(l => l.classList.remove('active'));
+    if(btn) btn.classList.add('active');
     applyFilters();
   };
 
@@ -790,26 +700,17 @@ footer a:hover{opacity:1;color:var(--red);}
   };
 
   function applyFilters() {
-    const rows = ['row-trending','row-studios','row-tv','row-action','row-comedy','row-drama','row-horror','row-scifi','row-thriller','row-romance','row-animation','row-crime','row-documentary','row-anime'];
-    rows.forEach(r => document.getElementById(r).style.display = currentGenreFilter === 'all' ? 'block' : 'none');
+    const rows = ['row-trending','row-studios','row-tv','row-action'];
+    rows.forEach(r => {
+      const el = document.getElementById(r);
+      if(el) el.style.display = currentGenreFilter === 'all' ? 'block' : 'none';
+    });
   }
-
-  window.seeAll = (genre, title, type) => { window.location.href = `browse.html?genre=${genre}&title=${title}&type=${type}`; };
 
   Promise.all([
     loadTrending(),
     fetchRow(`${API}/tv/popular?api_key=${API_KEY}`, 'tv-list', 'tv'),
     fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=28`, 'action-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=35`, 'comedy-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=18`, 'drama-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=27`, 'horror-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=878`, 'scifi-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=53`, 'thriller-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=10749`, 'romance-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=16`, 'animation-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=80`, 'crime-list'),
-    fetchRow(`${API}/discover/movie?api_key=${API_KEY}&with_genres=99`, 'documentary-list'),
-    fetchRow(`${API}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja`, 'anime-list', 'tv'),
   ]);
 </script>
 </body>
